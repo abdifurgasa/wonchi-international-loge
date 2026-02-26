@@ -26,7 +26,7 @@ function showRooms(){
     rooms.forEach((r,i)=>{
         container.innerHTML += `
         <div class="card">
-            <h3>${r.name}</h3>
+            <h4>${r.name}</h4>
             <p>Price: $${r.price}</p>
             <button onclick="deleteRoom(${i})">Delete</button>
         </div>

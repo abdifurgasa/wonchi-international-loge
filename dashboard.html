@@ -5,8 +5,6 @@
 <title>Dashboard - Wanci International Loge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="css/style.css">
-
 <style>
 .menu-grid{
     display:grid;
@@ -43,10 +41,10 @@
     cursor:pointer;
 }
 
-#roomList .card{
+#roomList .card,
+#foodList .card{
     margin-top:10px;
     background:#f2f2f2;
-    color:black;
 }
 </style>
 
@@ -62,36 +60,49 @@
 
 <div class="menu-grid">
 
-    <div class="card">
-        <h3>Room System</h3>
-        <p>Manage hotel rooms</p>
-        <button onclick="addRoom()">Add Room</button>
-        <div id="roomList"></div>
-    </div>
+<!-- Room System -->
+<div class="card">
+<h3>Room System</h3>
+<p>Manage hotel rooms</p>
+<button onclick="addRoom()">Add Room</button>
+<div id="roomList"></div>
+</div>
 
-    <div class="card">
-        <h3>Restaurant Orders</h3>
-        <p>Food & menu orders</p>
-    </div>
+<!-- Restaurant System -->
+<div class="card">
+<h3>Restaurant System</h3>
+<p>Food menu management</p>
 
-    <div class="card">
-        <h3>Finance</h3>
-        <p>Income and expenses</p>
-    </div>
+<button onclick="addFood()">Add Food</button>
+<div id="foodList"></div>
+</div>
+
+<!-- Finance Placeholder -->
+<div class="card">
+<h3>Finance</h3>
+<p>Income and expenses</p>
+</div>
 
 </div>
 
 <script src="js/auth.js"></script>
 <script src="js/room.js"></script>
+<script src="js/restaurant.js"></script>
 
 <script>
 function logout(){
     localStorage.removeItem("loggedIn");
-    window.location.href = "login.html";
+    window.location.href="login.html";
 }
 
-// Display rooms on load
-showRooms();
+window.onload = function(){
+    if(localStorage.getItem("loggedIn") !== "true"){
+        window.location.href="login.html";
+    }
+
+    showRooms();
+    showFoods();
+}
 </script>
 
 </body>

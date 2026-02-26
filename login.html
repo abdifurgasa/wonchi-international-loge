@@ -2,20 +2,87 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login - Wanci International Loge</title>
+<title>Wanci International Loge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background: linear-gradient(135deg,#141e30,#243b55);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* Glass Login Box */
+.login-box{
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    padding:40px;
+    border-radius:20px;
+    width:320px;
+    text-align:center;
+    color:white;
+    box-shadow:0 0 30px rgba(0,0,0,0.4);
+}
+
+.login-box h2{
+    margin-bottom:25px;
+}
+
+.login-box input{
+    width:100%;
+    padding:13px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:gold;
+    font-weight:bold;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+#msg{
+    margin-top:12px;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<div class="center-box">
-    <h2>Login to System</h2>
-    <input type="text" id="username" placeholder="Username"><br><br>
-    <input type="password" id="password" placeholder="Password"><br><br>
-    <button onclick="login()" class="btn">Login</button>
-    <p id="msg"></p>
+<div class="login-box">
+
+<h2>⭐ Wanci International Loge</h2>
+<p>Hotel Management System</p>
+
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+
+<button class="btn" onclick="login()">Login</button>
+
+<p id="msg"></p>
+
 </div>
 
 <script src="js/auth.js"></script>
+
 </body>
 </html>

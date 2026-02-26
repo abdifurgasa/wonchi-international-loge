@@ -9,7 +9,7 @@
 
 body{
     margin:0;
-    font-family:Arial;
+    font-family:Arial, sans-serif;
     background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
 }
@@ -64,7 +64,8 @@ body{
 }
 
 #roomList .card,
-#foodList .card{
+#foodList .card,
+#bookingList .card{
     margin-top:12px;
     background:rgba(0,0,0,0.2);
 }
@@ -81,11 +82,12 @@ body{
 
 <div class="header">
 <h1>⭐ Wanci International Loge</h1>
-<p>Luxury Hotel Management Dashboard</p>
+<p>Ultra Professional Hotel Dashboard</p>
 </div>
 
 <div class="grid">
 
+<!-- Room System -->
 <div class="card">
 <h3>🛏 Room System</h3>
 <p>Manage hotel rooms</p>
@@ -93,6 +95,7 @@ body{
 <div id="roomList"></div>
 </div>
 
+<!-- Restaurant System -->
 <div class="card">
 <h3>🍽 Restaurant System</h3>
 <p>Food menu management</p>
@@ -100,10 +103,19 @@ body{
 <div id="foodList"></div>
 </div>
 
+<!-- Booking System -->
 <div class="card">
-<h3>💰 Finance</h3>
-<p>Income & expense panel</p>
-<p>Coming soon...</p>
+<h3>📅 Booking System</h3>
+<p>Reservation management</p>
+<button class="btn" onclick="addBooking()">Create Booking</button>
+<div id="bookingList"></div>
+</div>
+
+<!-- Finance Panel -->
+<div class="card" id="financeData">
+<h3>💰 Finance Report</h3>
+<p>Total Income: $0</p>
+<p>Total Bookings: 0</p>
 </div>
 
 </div>
@@ -111,6 +123,8 @@ body{
 <script src="js/auth.js"></script>
 <script src="js/room.js"></script>
 <script src="js/restaurant.js"></script>
+<script src="js/booking.js"></script>
+<script src="js/finance.js"></script>
 
 <script>
 
@@ -126,6 +140,8 @@ window.onload=function(){
 
     showRooms();
     showFoods();
+    showBookings();
+    updateFinance();
 }
 
 </script>

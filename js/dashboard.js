@@ -4,16 +4,31 @@ window.onload = function () {
 };
 
 function loadDashboard() {
+
     const db = Database.getData();
 
-    document.querySelectorAll(".card p")[0].innerText = db.rooms.length;
-    document.querySelectorAll(".card p")[3].innerText = db.customers.length;
+    // Total Rooms
+    document.querySelectorAll(".card p")[0].innerText =
+        db.rooms.length;
 
-    const totalRevenue = db.finance.reduce((sum, item) => sum + item.amount, 0);
-    document.querySelectorAll(".card p")[2].innerText = totalRevenue + " ETB";
+    // Available Rooms
+    const availableRooms = db.rooms.filter(
+        r => r.status === "available"
+    ).length;
 
-    const availableRooms = db.rooms.filter(r => r.status === "available").length;
-    document.querySelectorAll(".card p")[1].innerText = availableRooms;
+    document.querySelectorAll(".card p")[1].innerText =
+        availableRooms;
+
+    // Revenue Calculation
+    const totalRevenue = db.finance ?
+        db.finance.reduce((sum, f) => sum + f.amount, 0) : 0;
+
+    document.querySelectorAll(".card p")[2].innerText =
+        totalRevenue + " ETB";
+
+    // Customers Count
+    document.querySelectorAll(".card p")[3].innerText =
+        db.customers ? db.customers.length : 0;
 }
 
 function navigate(page) {

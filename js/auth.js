@@ -1,21 +1,16 @@
-function login(){
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
-    const msg = document.getElementById('msg');
+function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("loginMessage");
 
-    if(user === "admin" && pass === "admin123"){
-        localStorage.setItem("loggedIn","true");
-        window.location.href = "dashboard.html";
-    }else{
-        msg.innerText = "Invalid Username or Password";
-        msg.style.color = "red";
-    }
-}
-
-window.onload = function(){
-    if(window.location.pathname.includes("dashboard")){
-        if(localStorage.getItem("loggedIn") !== "true"){
-            window.location.href = "login.html";
-        }
+    if (username === "admin" && password === "1234") {
+        message.style.color = "green";
+        message.textContent = "Login successful!";
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1000);
+    } else {
+        message.style.color = "red";
+        message.textContent = "Invalid username or password!";
     }
 }

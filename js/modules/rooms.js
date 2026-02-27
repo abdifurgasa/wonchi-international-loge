@@ -3,15 +3,26 @@ window.onload = function () {
     loadRooms();
 };
 
-function addRoom() {
+function addRoom(){
+
     const number = document.getElementById("roomNumber").value;
     const type = document.getElementById("roomType").value;
     const price = parseFloat(document.getElementById("roomPrice").value);
+    const photo = document.getElementById("roomPhoto").value;
 
-    if (!number || !type || !price) {
-        alert("Please fill all fields");
+    if(!number || !type || !price){
+        alert("Fill all fields");
         return;
     }
+
+    const room = new Room(number,type,price,photo);
+
+    RoomService.addRoom(room);
+
+    loadRooms();
+
+    alert("Room added successfully");
+}
 
     const room = new Room(number, type, price);
     RoomService.addRoom(room);

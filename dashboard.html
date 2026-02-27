@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wanci Dashboard</title>
 
+<link rel="stylesheet" href="css/style.css">
+
+<script>
+window.onload = function(){
+
+let role = localStorage.getItem("userRole");
+
+document.getElementById("roleName").innerText = role;
+
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<h2>🏨 Wanci International Lodge</h2>
+
+<h3>Welcome <span id="roleName"></span></h3>
+
+<div class="cards">
+
+<div class="card" onclick="location.href='booking.html'">
+📋 Room Booking
+</div>
+
+<div class="card" onclick="location.href='restaurant.html'">
+🍽 Restaurant Order
+</div>
+
+<div class="card" onclick="location.href='finance.html'">
+💰 Finance
+</div>
+
+<div class="card" onclick="alert('System Settings')">
+⚙ Settings
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>

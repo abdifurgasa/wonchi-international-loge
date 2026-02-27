@@ -1,9 +1,12 @@
 class Room {
-    constructor(number, type, price) {
+
+    constructor(number, type, price, photo){
+
         this.id = Date.now();
         this.number = number;
         this.type = type;
         this.price = price;
+        this.photo = photo;
         this.status = "available";
     }
 }

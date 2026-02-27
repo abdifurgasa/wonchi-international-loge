@@ -1,4 +1,16 @@
 window.onload = function () {
+
+    const role = localStorage.getItem("wanci_role");
+
+    if(!role){
+        window.location.href = "index.html";
+        return;
+    }
+
+    Database.init();
+    loadDashboard();
+};
+window.onload = function () {
     Database.init();
     loadDashboard();
 };

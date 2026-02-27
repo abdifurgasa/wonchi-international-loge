@@ -1,22 +1,35 @@
+/* =====================================
+   ROOM MODULE - Wanci Lodge System
+===================================== */
+
 window.onload = function () {
     Database.init();
     loadRooms();
 };
 
-/* =============================
+/* =====================================
    ADD ROOM
-============================= */
+===================================== */
 
 function addRoom(){
 
     const number = document.getElementById("roomNumber").value.trim();
     const type = document.getElementById("roomType").value.trim();
     const price = parseFloat(document.getElementById("roomPrice").value);
-    const photo = document.getElementById("roomPhoto").value.trim();
+
+    const photoInput = document.getElementById("roomPhoto");
 
     if(!number || !type || isNaN(price)){
-        alert("Please fill all fields correctly");
+        alert("Fill all room fields");
         return;
+    }
+
+    /* ===== Gallery File Selection ===== */
+
+    let photo = "";
+
+    if(photoInput.files && photoInput.files.length > 0){
+        photo = URL.createObjectURL(photoInput.files[0]);
     }
 
     const room = new Room(number, type, price, photo);
@@ -29,11 +42,11 @@ function addRoom(){
     alert("Room added successfully");
 }
 
-/* =============================
+/* =====================================
    LOAD ROOM TABLE
-============================= */
+===================================== */
 
-function loadRooms() {
+function loadRooms(){
 
     const rooms = RoomService.getRooms();
     const tbody = document.querySelector("#roomTable tbody");
@@ -56,24 +69,26 @@ function loadRooms() {
             <td>${room.number || ""}</td>
             <td>${room.type || ""}</td>
 
-            <td style="font-weight:bold">
-                ${room.price || 0} ETB
-            </td>
+            <td>${room.price || 0} ETB</td>
 
             <td>
-                <span class="status-badge ${room.status === "available" ? "available" : "booked"}">
+                <span style="
+                padding:5px 10px;
+                border-radius:8px;
+                background:${room.status === "available" ? "#e8f5e9" : "#ffebee"};
+                color:${room.status === "available" ? "#2e7d32" : "#c62828"};
+                font-size:12px;
+                ">
                 ${room.status || "available"}
                 </span>
             </td>
 
             <td>
-                <button class="action-btn change-btn"
-                onclick="toggleStatus(${room.id})">
+                <button onclick="toggleStatus(${room.id})">
                 Change
                 </button>
 
-                <button class="action-btn delete-btn"
-                onclick="deleteRoom(${room.id})">
+                <button onclick="deleteRoom(${room.id})">
                 Delete
                 </button>
             </td>
@@ -85,11 +100,11 @@ function loadRooms() {
     });
 }
 
-/* =============================
+/* =====================================
    STATUS TOGGLE
-============================= */
+===================================== */
 
-function toggleStatus(id) {
+function toggleStatus(id){
 
     const db = Database.getData();
 
@@ -97,46 +112,51 @@ function toggleStatus(id) {
 
     if(!room) return;
 
-    room.status = room.status === "available"
+    room.status =
+        room.status === "available"
         ? "occupied"
         : "available";
 
     Database.saveData(db);
+
     loadRooms();
 }
 
-/* =============================
+/* =====================================
    DELETE ROOM
-============================= */
+===================================== */
 
-function deleteRoom(id) {
+function deleteRoom(id){
 
-    if(!confirm("Delete this room?")) return;
+    if(!confirm("Delete room?")) return;
 
     const db = Database.getData();
 
     db.rooms = db.rooms.filter(r => r.id !== id);
 
     Database.saveData(db);
+
     loadRooms();
 }
 
-/* =============================
-   FORM RESET
-============================= */
+/* =====================================
+   CLEAR FORM
+===================================== */
 
 function clearRoomForm(){
 
     document.getElementById("roomNumber").value = "";
     document.getElementById("roomType").value = "";
     document.getElementById("roomPrice").value = "";
-    document.getElementById("roomPhoto").value = "";
+
+    const photoInput = document.getElementById("roomPhoto");
+    if(photoInput) photoInput.value = "";
 }
 
-/* =============================
+/* =====================================
    BACK NAVIGATION
-============================= */
+===================================== */
 
-function goBack() {
-    window.location.href = "../dashboard.html";
+function goBack(){
+    window.location.href="../dashboard.html";
 }

@@ -1,36 +1,48 @@
-/* =============================
-   DASHBOARD LOADER
-============================= */
+/* =========================================
+   ULTIMATE PRO DASHBOARD
+   Wanci International Lodge System
+========================================= */
 
 window.onload = function(){
-    loadDashboardStats();
+    initDashboard();
 };
 
-/* =============================
-   LOAD DASHBOARD STATISTICS
-============================= */
+/* =========================================
+   MAIN INITIALIZER
+========================================= */
+
+function initDashboard(){
+    loadDashboardStats();
+    startLiveRefresh();
+}
+
+/* =========================================
+   LIVE AUTO REFRESH (EVERY 10 SECONDS)
+========================================= */
+
+function startLiveRefresh(){
+    setInterval(loadDashboardStats, 10000);
+}
+
+/* =========================================
+   LOAD STATISTICS
+========================================= */
 
 function loadDashboardStats(){
 
     const db = Database.getData();
-
-    if(!db){
-        return;
-    }
+    if(!db) return;
 
     /* ===== TOTAL ROOMS ===== */
-    const totalRooms = db.rooms ? db.rooms.length : 0;
+    const totalRooms = db.rooms?.length || 0;
 
-    document.querySelectorAll(".card p")[0].innerText =
-        totalRooms;
+    setCardValue(0, totalRooms);
 
     /* ===== AVAILABLE ROOMS ===== */
     const availableRooms = db.rooms ?
-        db.rooms.filter(r => r.status === "available").length
-        : 0;
+        db.rooms.filter(r => r.status === "available").length : 0;
 
-    document.querySelectorAll(".card p")[1].innerText =
-        availableRooms;
+    setCardValue(1, availableRooms);
 
     /* ===== TODAY REVENUE ===== */
 
@@ -45,36 +57,45 @@ function loadDashboardStats(){
             if(!b.date) return;
 
             if(new Date(b.date).toDateString() === today){
-                revenue += parseFloat(b.price || 0);
+                revenue += Number(b.price || 0);
             }
 
         });
     }
 
-    document.querySelectorAll(".card p")[2].innerText =
-        revenue + " ETB";
+    setCardValue(2, revenue + " ETB");
 
     /* ===== TOTAL CUSTOMERS ===== */
 
-    const customers = db.customers ?
-        db.customers.length : 0;
+    const customers = db.customers?.length || 0;
 
-    document.querySelectorAll(".card p")[3].innerText =
-        customers;
+    setCardValue(3, customers);
 }
 
-/* =============================
-   NAVIGATION
-============================= */
+/* =========================================
+   DASHBOARD CARD WRITER
+========================================= */
+
+function setCardValue(index, value){
+
+    const cards = document.querySelectorAll(".card p");
+
+    if(cards[index]){
+        cards[index].innerText = value;
+    }
+}
+
+/* =========================================
+   NAVIGATION ENGINE
+========================================= */
 
 function navigate(page){
-
     window.location.href = page + ".html";
 }
 
-/* =============================
-   LOGOUT
-============================= */
+/* =========================================
+   SESSION CONTROL
+========================================= */
 
 function logout(){
     localStorage.clear();

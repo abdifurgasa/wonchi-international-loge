@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Room Booking</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc } 
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+/* Firebase Config */
+const firebaseConfig = {
+ apiKey: "PASTE_API_KEY",
+ authDomain: "wanci-international-loge.firebaseapp.com",
+ projectId: "wanci-international-loge",
+ storageBucket: "wanci-international-loge.firebasestorage.app",
+ messagingSenderId: "346207231234",
+ appId: "1:346207231234:web:09ae7390e6544721dfb61b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.bookRoom = async function(){
+
+const name = document.getElementById("name").value;
+const room = document.getElementById("room").value;
+const price = document.getElementById("price").value;
+
+if(name === "" || room === "" || price === ""){
+ alert("Fill all fields");
+ return;
+}
+
+await addDoc(collection(db,"bookings"),{
+ customer:name,
+ room:room,
+ price:price,
+ date:new Date().toISOString()
+});
+
+alert("Booking Saved ✅");
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h2>📋 Room Booking</h2>
+
+<input id="name" placeholder="Customer Name">
+
+<input id="room" placeholder="Room Number">
+
+<input id="price" placeholder="Price">
+
+<button onclick="bookRoom()">Save Booking</button>
+
+</div>
+
+</body>
+</html>

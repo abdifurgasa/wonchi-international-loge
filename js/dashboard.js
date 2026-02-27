@@ -1,52 +1,82 @@
-window.onload = function () {
+/* =============================
+   DASHBOARD LOADER
+============================= */
 
-    const role = localStorage.getItem("wanci_role");
-
-    if(!role){
-        window.location.href = "index.html";
-        return;
-    }
-
-    Database.init();
-    loadDashboard();
-};
-window.onload = function () {
-    Database.init();
-    loadDashboard();
+window.onload = function(){
+    loadDashboardStats();
 };
 
-function loadDashboard() {
+/* =============================
+   LOAD DASHBOARD STATISTICS
+============================= */
+
+function loadDashboardStats(){
 
     const db = Database.getData();
 
-    // Total Rooms
-    document.querySelectorAll(".card p")[0].innerText =
-        db.rooms.length;
+    if(!db){
+        return;
+    }
 
-    // Available Rooms
-    const availableRooms = db.rooms.filter(
-        r => r.status === "available"
-    ).length;
+    /* ===== TOTAL ROOMS ===== */
+    const totalRooms = db.rooms ? db.rooms.length : 0;
+
+    document.querySelectorAll(".card p")[0].innerText =
+        totalRooms;
+
+    /* ===== AVAILABLE ROOMS ===== */
+    const availableRooms = db.rooms ?
+        db.rooms.filter(r => r.status === "available").length
+        : 0;
 
     document.querySelectorAll(".card p")[1].innerText =
         availableRooms;
 
-    // Revenue Calculation
-    const totalRevenue = db.finance ?
-        db.finance.reduce((sum, f) => sum + f.amount, 0) : 0;
+    /* ===== TODAY REVENUE ===== */
+
+    let revenue = 0;
+
+    if(db.bookings){
+
+        const today = new Date().toDateString();
+
+        db.bookings.forEach(b => {
+
+            if(!b.date) return;
+
+            if(new Date(b.date).toDateString() === today){
+                revenue += parseFloat(b.price || 0);
+            }
+
+        });
+    }
 
     document.querySelectorAll(".card p")[2].innerText =
-        totalRevenue + " ETB";
+        revenue + " ETB";
 
-    // Customers Count
+    /* ===== TOTAL CUSTOMERS ===== */
+
+    const customers = db.customers ?
+        db.customers.length : 0;
+
     document.querySelectorAll(".card p")[3].innerText =
-        db.customers ? db.customers.length : 0;
+        customers;
 }
 
-function navigate(page) {
-    window.location.href = "pages/" + page + ".html";
+/* =============================
+   NAVIGATION
+============================= */
+
+function navigate(page){
+
+    window.location.href = page + ".html";
 }
 
-function logout() {
+/* =============================
+   LOGOUT
+============================= */
+
+function logout(){
+    localStorage.clear();
     window.location.href = "index.html";
 }

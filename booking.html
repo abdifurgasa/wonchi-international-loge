@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Room Booking</title>
+<title>Booking List</title>
 
 <link rel="stylesheet" href="css/style.css">
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc } 
+import { getFirestore, collection, getDocs } 
 from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 /* Firebase Config */
@@ -25,25 +25,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.bookRoom = async function(){
+window.onload = async function(){
 
-const name = document.getElementById("name").value;
-const room = document.getElementById("room").value;
-const price = document.getElementById("price").value;
+const container = document.getElementById("bookingList");
 
-if(name === "" || room === "" || price === ""){
- alert("Fill all fields");
- return;
-}
+const querySnapshot = await getDocs(collection(db,"bookings"));
 
-await addDoc(collection(db,"bookings"),{
- customer:name,
- room:room,
- price:price,
- date:new Date().toISOString()
+querySnapshot.forEach((doc)=>{
+
+let data = doc.data();
+
+container.innerHTML += `
+<div class="card">
+🏷 Customer: ${data.customer}<br>
+🚪 Room: ${data.room}<br>
+💰 Price: ${data.price}<br>
+📅 Date: ${data.date}
+</div>
+`;
+
 });
-
-alert("Booking Saved ✅");
 
 }
 
@@ -53,17 +54,11 @@ alert("Booking Saved ✅");
 
 <body>
 
-<div class="login-box">
+<div class="dashboard">
 
-<h2>📋 Room Booking</h2>
+<h2>📋 Booking List</h2>
 
-<input id="name" placeholder="Customer Name">
-
-<input id="room" placeholder="Room Number">
-
-<input id="price" placeholder="Price">
-
-<button onclick="bookRoom()">Save Booking</button>
+<div id="bookingList" class="cards"></div>
 
 </div>
 

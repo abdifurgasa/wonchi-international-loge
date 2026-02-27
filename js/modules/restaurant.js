@@ -1,84 +1,119 @@
+/* =====================================
+   RESTAURANT MODULE - Wanci Lodge
+===================================== */
+
 window.onload = function(){
     Database.init();
-    loadOrders();
+    loadFoods();
 };
 
-function addFoodOrder(){
+/* =====================================
+   ADD FOOD MENU
+===================================== */
 
-    const name = document.getElementById("foodName").value;
+function addFood(){
+
+    const name = document.getElementById("foodName").value.trim();
     const price = parseFloat(document.getElementById("foodPrice").value);
 
-    if(!name || !price){
-        alert("Fill food order data");
+    const photoInput = document.getElementById("foodPhoto");
+
+    if(!name || isNaN(price)){
+        alert("Fill food name and price");
         return;
     }
 
-    const db = Database.getData();
+    /* ===== Gallery Image Selection ===== */
 
-    if(!db.restaurant){
-        db.restaurant = [];
+    let photo = "";
+
+    if(photoInput.files && photoInput.files.length > 0){
+        photo = URL.createObjectURL(photoInput.files[0]);
     }
 
-    const order = {
+    const db = Database.getData();
+
+    const food = {
         id: Date.now(),
-        food: name,
-        price: price,
-        date: new Date()
+        name,
+        price,
+        photo
     };
 
-    db.restaurant.push(order);
-
-    // Save finance income
-    db.finance.push({
-        id: Date.now(),
-        type:"income",
-        amount: price,
-        description:"Restaurant Sale",
-        date:new Date()
-    });
+    db.restaurant.push(food);
 
     Database.saveData(db);
 
-    loadOrders();
-    alert("Order added!");
+    clearFoodForm();
+    loadFoods();
+
+    alert("Food added successfully");
 }
 
-function loadOrders(){
+/* =====================================
+   LOAD FOOD TABLE
+===================================== */
+
+function loadFoods(){
 
     const db = Database.getData();
-
     const tbody = document.querySelector("#foodTable tbody");
+
+    if(!tbody) return;
 
     tbody.innerHTML = "";
 
-    if(!db.restaurant) return;
-
-    db.restaurant.forEach(order=>{
+    db.restaurant.forEach(food => {
 
         tbody.innerHTML += `
         <tr>
-        <td>${order.food}</td>
-        <td>${order.price}</td>
-        <td>${order.date}</td>
-        <td>
-        <button onclick="deleteOrder(${order.id})">Delete</button>
-        </td>
+
+            <td>
+                <img src="${food.photo || '../assets/images/food.png'}"
+                width="60" height="60"
+                style="border-radius:12px; object-fit:cover;">
+            </td>
+
+            <td>${food.name}</td>
+            <td>${food.price} ETB</td>
+
+            <td>
+                <button onclick="deleteFood(${food.id})">
+                Delete
+                </button>
+            </td>
+
         </tr>
         `;
     });
 }
 
-function deleteOrder(id){
+/* =====================================
+   DELETE FOOD
+===================================== */
+
+function deleteFood(id){
+
+    if(!confirm("Delete food item?")) return;
 
     const db = Database.getData();
 
-    db.restaurant = db.restaurant.filter(o=>o.id!==id);
+    db.restaurant = db.restaurant.filter(f => f.id !== id);
 
     Database.saveData(db);
 
-    loadOrders();
+    loadFoods();
 }
 
-function goBack(){
-    window.location.href="../dashboard.html";
+/* =====================================
+   CLEAR FORM
+===================================== */
+
+function clearFoodForm(){
+
+    document.getElementById("foodName").value = "";
+    document.getElementById("foodPrice").value = "";
+
+    const photoInput = document.getElementById("foodPhoto");
+    if(photoInput) photoInput.value = "";
 }

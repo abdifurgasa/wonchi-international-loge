@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wanci International Lodge</title>
 
+<link rel="stylesheet" href="css/style.css">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+ apiKey: "YOUR_KEY",
+ authDomain: "YOUR_DOMAIN",
+ projectId: "YOUR_PROJECT",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = function(){
+
+ alert("Login system will be added next step 🔥");
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div class="login-box">
+<h2>🏨 Wanci International Lodge</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+</div>
+
+</body>
+</html>

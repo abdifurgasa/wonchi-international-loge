@@ -1,1 +1,35 @@
+body{
+background:url("https://i.imgur.com/8QxYJ0m.jpeg");
+background-size:cover;
+font-family:Arial;
+}
 
+.login-box{
+width:320px;
+margin:auto;
+margin-top:150px;
+background:rgba(0,0,0,0.6);
+padding:30px;
+border-radius:20px;
+color:white;
+text-align:center;
+backdrop-filter: blur(10px);
+}
+
+.login-box input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+}
+
+.login-box button{
+width:100%;
+padding:12px;
+background:#F4B400;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}

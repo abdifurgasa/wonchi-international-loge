@@ -2,113 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Wanci Dashboard</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<script type="module">
-
-window.onload = function(){
-
-let role = localStorage.getItem("userRole");
-
-if(!role){
- window.location.href = "index.html";
-}
-
-document.getElementById("roleName").innerText = role;
-
-}
-
-</script>
-
-<style>
-
-.dashboard{
-min-height:100vh;
-background:linear-gradient(to bottom,#0F3057,#001a33);
-color:white;
-text-align:center;
-padding:40px;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:25px;
-margin-top:40px;
-}
-
-.card{
-background:rgba(255,255,255,0.1);
-padding:35px;
-border-radius:20px;
-cursor:pointer;
-transition:0.3s;
-backdrop-filter: blur(10px);
-font-size:18px;
-}
-
-.card:hover{
-transform:scale(1.05);
-background:#F4B400;
-color:black;
-}
-
-.logout{
-background:red;
-padding:12px 25px;
-border:none;
-color:white;
-border-radius:10px;
-cursor:pointer;
-margin-top:20px;
-}
-
-</style>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wanci International Lodge - Dashboard</title>
+<link rel="stylesheet" href="css/dashboard.css">
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="overlay">
 
-<h2>🏨 Wanci International Lodge</h2>
+    <div class="logo">
+        <h1>Wanci</h1>
+        <p>International Lodge</p>
+    </div>
 
-<h3>Welcome <span id="roleName"></span></h3>
+    <div class="menu">
 
-<button class="logout" onclick="logout()">Logout</button>
+        <a href="pages/rooms.html" class="card">
+            <h2>🛏 Room Management</h2>
+        </a>
 
-<div class="cards">
+        <a href="pages/booking.html" class="card">
+            <h2>📅 Booking System</h2>
+        </a>
 
-<div class="card" onclick="location.href='booking.html'">
-📋 Room Booking
+        <a href="pages/statistics.html" class="card">
+            <h2>📊 Statistics</h2>
+        </a>
+
+        <a href="pages/finance.html" class="card">
+            <h2>💰 Finance</h2>
+        </a>
+
+    </div>
+
 </div>
-
-<div class="card" onclick="location.href='booking-list.html'">
-📖 Booking List
-</div>
-
-<div class="card" onclick="alert('Restaurant Module Coming')">
-🍽 Restaurant
-</div>
-
-<div class="card" onclick="alert('Finance Module Coming')">
-💰 Finance
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-function logout(){
- localStorage.clear();
- window.location.href="index.html";
-}
-
-</script>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase.js";
+import { auth } from "./firebase.js";
 
 import { signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -10,7 +10,10 @@ const password = document.getElementById("password").value;
 
 signInWithEmailAndPassword(auth,email,password)
 .then(()=>{
-window.location.href="dashboard.html";
+
+// ✅ Force dashboard open
+window.location.href = "dashboard.html";
+
 })
 .catch(err=>{
 alert(err.message);

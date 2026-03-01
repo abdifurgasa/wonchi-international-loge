@@ -1,8 +1,5 @@
 .login-body{
-background-image:url("../images/login-bg.jpg");
-background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
+background:url("/images/login-bg.jpg") center/cover no-repeat !important;
 height:100vh;
 display:flex;
 justify-content:center;

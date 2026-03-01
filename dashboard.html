@@ -1,19 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Dashboard</title>
-<link rel="stylesheet" href="css/style.css">
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    display:flex;
+}
+.sidebar{
+    width:220px;
+    background:#1e293b;
+    color:white;
+    height:100vh;
+    padding:20px;
+}
+.sidebar ul{
+    list-style:none;
+    padding:0;
+}
+.sidebar li{
+    padding:10px;
+    margin-top:5px;
+    cursor:pointer;
+}
+.sidebar li:hover{
+    background:#334155;
+}
+.content{
+    flex:1;
+    padding:20px;
+}
+</style>
 </head>
-
 <body>
 
-<h1 id="welcome"></h1>
-
-<ul id="menu"></ul>
-
+<div class="sidebar">
+<h3 id="welcome"></h3>
+<ul>
+    <li id="dashboardMenu" class="menu-item">Dashboard</li>
+    <li id="roomsMenu" class="menu-item">Rooms</li>
+    <li id="bookingsMenu" class="menu-item">Bookings</li>
+    <li id="usersMenu" class="menu-item">Users</li>
+    <li id="reportsMenu" class="menu-item">Reports</li>
+</ul>
 <button onclick="logout()">Logout</button>
+</div>
+
+<div class="content">
+<h2>Welcome to Wanci International Lodge System</h2>
+<div id="noAccess" style="display:none; color:red; font-weight:bold;">
+No Access
+</div>
+</div>
 
 <script type="module" src="js/dashboard.js"></script>
-
 </body>
 </html>

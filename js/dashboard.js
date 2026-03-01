@@ -27,30 +27,28 @@ onAuthStateChanged(auth, async user => {
 
     const role = data.role;
 
-    // Hide all menu items first
-    document.querySelectorAll(".menu-item").forEach(item => {
-        item.style.display = "none";
+    document.querySelectorAll(".menu-item").forEach(item=>{
+        item.style.display="none";
     });
 
-    // Role-based access
-    if (role === "admin") {
-        document.querySelectorAll(".menu-item").forEach(item => {
-            item.style.display = "block";
+    if(role==="admin"){
+        document.querySelectorAll(".menu-item").forEach(item=>{
+            item.style.display="block";
         });
     }
-    else if (role === "receptionist") {
-        document.getElementById("dashboardMenu").style.display = "block";
-        document.getElementById("roomsMenu").style.display = "block";
-        document.getElementById("bookingsMenu").style.display = "block";
+    else if(role==="receptionist"){
+        document.getElementById("dashboardMenu").style.display="block";
+        document.getElementById("roomsMenu").style.display="block";
+        document.getElementById("bookingsMenu").style.display="block";
     }
-    else {
-        document.getElementById("noAccess").style.display = "block";
+    else{
+        document.getElementById("noAccess").style.display="block";
     }
 
 });
 
-window.logout = function () {
-    signOut(auth).then(() => {
-        window.location.href = "index.html";
-    });
+window.logout=function(){
+signOut(auth).then(()=>{
+window.location.href="index.html";
+});
 };

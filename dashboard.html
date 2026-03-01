@@ -1,42 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wanci International Lodge - Dashboard</title>
-<link rel="stylesheet" href="css/dashboard.css">
+<title>Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<div class="overlay">
+<h1 id="welcome"></h1>
 
-    <div class="logo">
-        <h1>Wanci</h1>
-        <p>International Lodge</p>
-    </div>
+<ul id="menu"></ul>
 
-    <div class="menu">
+<button onclick="logout()">Logout</button>
 
-        <a href="pages/rooms.html" class="card">
-            <h2>🛏 Room Management</h2>
-        </a>
-
-        <a href="pages/booking.html" class="card">
-            <h2>📅 Booking System</h2>
-        </a>
-
-        <a href="pages/statistics.html" class="card">
-            <h2>📊 Statistics</h2>
-        </a>
-
-        <a href="pages/finance.html" class="card">
-            <h2>💰 Finance</h2>
-        </a>
-
-    </div>
-
-</div>
+<script type="module" src="js/dashboard.js"></script>
 
 </body>
 </html>

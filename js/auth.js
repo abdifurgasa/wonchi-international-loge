@@ -16,7 +16,6 @@ return;
 signInWithEmailAndPassword(auth,email,password)
 .then(()=>{
 
-// ✅ Redirect to dashboard
 window.location.href = "dashboard.html";
 
 })

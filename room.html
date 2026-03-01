@@ -1,0 +1,35 @@
+<h2>Room Management</h2>
+
+<input id="roomNumber" placeholder="Room Number">
+
+<select id="roomType">
+<option>Single</option>
+<option>Double</option>
+<option>VIP</option>
+<option>Family</option>
+<option>Deluxe</option>
+</select>
+
+<input id="roomPrice" placeholder="Price">
+
+<input type="file" id="roomPhoto">
+
+<button onclick="addRoom()">Add Room</button>
+
+<hr>
+
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>Photo</th>
+<th>Room</th>
+<th>Type</th>
+<th>Price</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="roomTable"></tbody>
+</table>
+
+<script type="module" src="js/rooms.js"></script>

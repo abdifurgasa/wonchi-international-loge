@@ -1,56 +1,11 @@
-body{
-margin:0;
-font-family:Arial;
-}
-
-/* Login Background */
 .login-body{
-background:url("../images/login-bg.jpg") center/cover no-repeat;
+background-image:url("../images/login-bg.jpg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
 position:relative;
-}
-
-/* Dark overlay */
-.login-body::before{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-}
-
-/* Login Box */
-.login-box{
-position:relative;
-background:white;
-padding:40px;
-width:320px;
-border-radius:15px;
-text-align:center;
-z-index:2;
-box-shadow:0 0 20px black;
-}
-
-/* Input */
-.login-box input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-/* Button */
-.login-box button{
-width:100%;
-padding:12px;
-background:#ff0000;
-color:white;
-border:none;
-border-radius:8px;
-font-size:18px;
-cursor:pointer;
 }

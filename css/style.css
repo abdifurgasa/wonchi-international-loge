@@ -1,49 +1,49 @@
 body{
-    margin:0;
-    font-family: Arial;
+margin:0;
+font-family:Arial;
 }
 
 .login-body{
-    background:url("../images/login-bg.jpg") center/cover no-repeat;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+background:url("../images/login-bg.jpg") center/cover no-repeat;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
 .overlay{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
 }
 
 .login-box{
-    position:relative;
-    background:white;
-    padding:40px;
-    width:320px;
-    border-radius:15px;
-    text-align:center;
-    z-index:2;
-    box-shadow:0 0 20px black;
+position:relative;
+background:white;
+padding:40px;
+width:320px;
+border-radius:15px;
+text-align:center;
+z-index:2;
+box-shadow:0 0 20px black;
 }
 
 .login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:8px;
-    border:1px solid #ccc;
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
 .login-box button{
-    width:100%;
-    padding:12px;
-    background:#ff0000;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    cursor:pointer;
+width:100%;
+padding:12px;
+background:#ff0000;
+color:white;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
 }

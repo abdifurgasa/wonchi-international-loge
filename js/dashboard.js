@@ -1,93 +1,109 @@
-body{
-margin:0;
-font-family:Segoe UI, sans-serif;
-background:#f1f5f9;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+getDoc,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* 🔥 Firebase Config */
+
+const firebaseConfig = {
+apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
+authDomain: "wanci-international-loge-43dd3.firebaseapp.com",
+projectId: "wanci-international-loge-43dd3",
+storageBucket: "wanci-international-loge-43dd3.appspot.com",
+messagingSenderId: "441258681939",
+appId: "1:441258681939:web:961697760d09b7234688a6"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* =============================
+AUTH CHECK
+============================= */
+
+onAuthStateChanged(auth, async user => {
+
+if (!user) {
+window.location.href = "index.html";
+return;
 }
 
-/* Sidebar */
+const snap = await getDoc(doc(db, "users", user.email));
 
-.sidebar{
-width:250px;
-height:100vh;
-background:linear-gradient(180deg,#0f172a,#1e293b);
-color:white;
-position:fixed;
-padding:20px;
-transition:0.4s;
+if (!snap.exists()) {
+alert("Role not assigned");
+return;
 }
 
-.sidebar h2{
-text-align:center;
-margin-bottom:30px;
+const data = snap.data();
+
+document.getElementById("welcomeText").innerText =
+"Welcome " + data.name + " (" + data.role + ")";
+
+/* Load Dashboard Data */
+loadDashboardData();
+
+});
+
+/* =============================
+LOAD DASHBOARD DATA
+============================= */
+
+async function loadDashboardData(){
+
+const roomsSnapshot =
+await getDocs(collection(db,"rooms"));
+
+document.getElementById("totalRooms").innerText =
+roomsSnapshot.size;
+
 }
 
-.sidebar ul{
-list-style:none;
-padding:0;
+/* =============================
+UI CONTROL
+============================= */
+
+window.toggleMenu = function(){
+
+document.getElementById("sidebar")
+.classList.toggle("collapsed");
+
+document.querySelector(".main")
+.classList.toggle("collapsed");
+
 }
 
-.sidebar li{
-padding:15px;
-margin:8px 0;
-border-radius:10px;
-cursor:pointer;
-transition:0.3s;
+window.showPage = function(pageId){
+
+document.querySelectorAll(".page")
+.forEach(page=>{
+page.classList.remove("active");
+});
+
+document.getElementById(pageId)
+.classList.add("active");
+
 }
 
-.sidebar li:hover{
-background:#ff0000;
-transform:translateX(6px);
-}
+/* =============================
+LOGOUT
+============================= */
 
-/* Main */
+window.logout = function(){
 
-.main{
-margin-left:250px;
-transition:0.4s;
-}
+signOut(auth).then(()=>{
+window.location.href="index.html";
+});
 
-.topbar{
-background:white;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-/* Cards */
-
-.card{
-background:white;
-padding:25px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
-margin:20px;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-6px);
-}
-
-/* Pages */
-
-.page{
-display:none;
-}
-
-.page.active{
-display:block;
-}
-
-/* Responsive */
-
-@media(max-width:768px){
-.sidebar{
-width:70px;
-}
-
-.main{
-margin-left:70px;
-}
 }

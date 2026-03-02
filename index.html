@@ -3,19 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Wanci International Lodge</title>
+<title>Wanci International Lodge Login</title>
+
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body class="login-body">
 
 <div class="login-box">
-    <h2>Wanci International Lodge</h2>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+<h2>Wanci International Lodge</h2>
 
-    <button onclick="login()">Login</button>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
 </div>
 
 <script type="module">
@@ -24,7 +28,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* 🔥 YOUR FIREBASE CONFIG */
+/* 🔥 Firebase Config */
+
 const firebaseConfig = {
  apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
  authDomain: "wanci-international-loge-43dd3.firebaseapp.com",
@@ -37,16 +42,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+/* ⭐ LOGIN FUNCTION */
+
 window.login = function(){
 
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
+if(!email || !password){
+alert("Enter email and password");
+return;
+}
+
 signInWithEmailAndPassword(auth,email,password)
 .then(()=>{
 window.location.href="dashboard.html";
 })
-.catch((error)=>{
+.catch(error=>{
 alert("Login Failed: " + error.message);
 });
 

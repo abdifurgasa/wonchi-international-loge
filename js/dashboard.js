@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 Your Firebase Config */
+/* 🔥 YOUR REAL FIREBASE CONFIG */
 const firebaseConfig = {
  apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
  authDomain: "wanci-international-loge-43dd3.firebaseapp.com",
@@ -32,13 +32,14 @@ return;
 }
 
 const data = snap.data();
+
 document.getElementById("welcomeText").innerText =
 "Welcome " + data.name + " (" + data.role + ")";
 
 loadDashboardData();
 });
 
-/* ===== LOAD DATA ===== */
+/* ===== LOAD DASHBOARD DATA ===== */
 
 async function loadDashboardData(){
 const roomsSnapshot = await getDocs(collection(db,"rooms"));

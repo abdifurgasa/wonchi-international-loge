@@ -1,47 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Wanci International Lodge</title>
+<title>Wanci International Lodge Dashboard</title>
+
 <link rel="stylesheet" href="css/dashboard.css">
+
 </head>
 
 <body>
 
 <div class="sidebar" id="sidebar">
-    <h2>Wanci Lodge</h2>
-    <ul>
-        <li onclick="showPage('home')">🏠 Home</li>
-        <li onclick="showPage('rooms')">🛏 Rooms</li>
-        <li onclick="showPage('booking')">📅 Booking</li>
-        <li onclick="logout()">🚪 Logout</li>
-    </ul>
+
+<h2>Wanci Lodge</h2>
+
+<ul>
+<li onclick="showPage('home')">🏠 Dashboard</li>
+<li onclick="showPage('rooms')">🛏 Rooms</li>
+<li onclick="showPage('booking')">📅 Booking</li>
+<li onclick="logout()">🚪 Logout</li>
+</ul>
+
 </div>
 
 <div class="main">
-    <div class="topbar">
-        <button onclick="toggleMenu()">☰</button>
-        <h3 id="welcomeText">Dashboard</h3>
-    </div>
 
-    <div class="content">
+<div class="topbar">
+<button onclick="toggleMenu()">☰</button>
+<h3 id="welcomeText">Dashboard</h3>
+</div>
 
-        <div class="page active" id="home">
-            <h1>Dashboard Overview</h1>
-            <p>Total Rooms: <span id="totalRooms">0</span></p>
-        </div>
+<div class="content">
 
-        <div class="page" id="rooms">
-            <h1>Room Management</h1>
-            <div id="roomList"></div>
-        </div>
+<div class="page active" id="home">
 
-        <div class="page" id="booking">
-            <h1>Booking Panel</h1>
-        </div>
+<div class="card">
+<h2>Dashboard Overview</h2>
+<p>Hotel Management System</p>
+</div>
 
-    </div>
+<div class="card">
+<h3>Total Rooms</h3>
+<h1 id="totalRooms">0</h1>
+</div>
+
+</div>
+
+<div class="page" id="rooms">
+<h2>Room Management</h2>
+</div>
+
+<div class="page" id="booking">
+<h2>Booking Panel</h2>
+</div>
+
+</div>
+
 </div>
 
 <script type="module" src="js/dashboard.js"></script>

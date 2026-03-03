@@ -2,7 +2,10 @@
 Wanci International Lodge
 PROFESSIONAL DASHBOARD ENGINE (FIXED VERSION)
 ===================================================== */
-
+import { loadRooms } from "./rooms.js";
+import { loadFoods } from "./food.js";
+import { loadDrinks } from "./drink.js";
+import { loadFinanceAnalytics } from "./finance.js";
 import { protectDashboard, logoutSystem } from "./auth.js";
 
 import "https://cdn.jsdelivr.net/npm/chart.js";

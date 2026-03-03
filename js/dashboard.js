@@ -63,7 +63,7 @@ return;
 const data = snap.data();
 
 document.getElementById("welcomeText").innerText =
-"Welcome " + data.name + " (" + data.role + ")";
+"Welcome "+data.name+" ("+data.role+")";
 
 loadDashboardData();
 loadRooms();
@@ -71,27 +71,10 @@ loadRooms();
 });
 
 /* =============================
-DASHBOARD COUNTER
+ROOM PRICE TABLE
 ============================= */
 
-async function loadDashboardData(){
-
-const snapshot = await getDocs(collection(db,"rooms"));
-
-document.getElementById("totalRooms").innerText =
-snapshot.size;
-
-}
-
-/* =============================
-AUTO PRICE SYSTEM
-============================= */
-
-window.setAutoPrice = function(){
-
-const type = document.getElementById("roomType").value;
-
-const prices = {
+const ROOM_PRICES = {
 Single:800,
 Double:1200,
 Deluxe:2000,
@@ -99,8 +82,16 @@ Smart:2500,
 VIP:5000
 };
 
+/* =============================
+AUTO PRICE
+============================= */
+
+window.setAutoPrice = function(){
+
+const type = document.getElementById("roomType").value;
+
 document.getElementById("roomPrice").value =
-prices[type] || "";
+ROOM_PRICES[type] || "";
 
 }
 
@@ -136,8 +127,8 @@ await addDoc(collection(db,"rooms"),{
 number,
 type,
 price,
-status:"Available",
-photo:photoURL
+photo:photoURL,
+status:"Available"
 });
 
 alert("Room Added");
@@ -148,14 +139,30 @@ loadDashboardData();
 }
 
 /* =============================
-LOAD ROOMS
+LOAD DASHBOARD COUNTER
+============================= */
+
+async function loadDashboardData(){
+
+const snapshot =
+await getDocs(collection(db,"rooms"));
+
+document.getElementById("totalRooms").innerText =
+snapshot.size;
+
+}
+
+/* =============================
+LOAD ROOM LIST
 ============================= */
 
 async function loadRooms(){
 
-const snapshot = await getDocs(collection(db,"rooms"));
+const snapshot =
+await getDocs(collection(db,"rooms"));
 
-const roomList = document.getElementById("roomList");
+const roomList =
+document.getElementById("roomList");
 
 if(!roomList) return;
 
@@ -171,12 +178,11 @@ roomList.innerHTML += `
 <img src="${data.photo || 'https://via.placeholder.com/250'}">
 
 <h3>Room ${data.number}</h3>
+
 <p>Type: ${data.type}</p>
 <p>Price: $${data.price}</p>
 
-<p class="room-status">
-Status: ${data.status}
-</p>
+<p>Status: ${data.status}</p>
 
 <select onchange="changeStatus('${docSnap.id}',this.value)">
 <option ${data.status==="Available"?"selected":""}>Available</option>
@@ -216,9 +222,12 @@ DELETE ROOM
 window.deleteRoom = async function(id){
 
 if(confirm("Delete room?")){
+
 await deleteDoc(doc(db,"rooms",id));
+
 loadRooms();
 loadDashboardData();
+
 }
 
 }

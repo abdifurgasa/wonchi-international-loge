@@ -1,32 +1,39 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { db } from "./firebase.js";
 
-import { 
-getAuth 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import { 
-getFirestore 
+import {
+collection,
+getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { 
-getStorage 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+/* ================= FINANCE ENGINE ================= */
 
-/* 🔥 Firebase Config */
+export async function loadFinanceAnalytics(){
 
-const firebaseConfig = {
-apiKey:"AlzaSyDqB7Igrso8OEBIL6ad3OtciFqHIk9TdE",
-authDomain:"wanci-international-loge.firebaseapp.com",
-projectId:"wanci-international-loge",
-storageBucket:"wanci-international-loge.appspot.com",
-messagingSenderId:"441258681939",
-appId:"1:441258681939:web:961697760d09b7234688a6"
-};
+const snapshot =
+await getDocs(collection(db,"finance"));
 
-/* Initialize */
+let revenue = 0;
 
-const app = initializeApp(firebaseConfig);
+snapshot.forEach(docSnap=>{
+revenue += docSnap.data().amount || 0;
+});
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+const chart =
+document.getElementById("revenueChart");
+
+if(chart){
+
+new Chart(chart,{
+type:"bar",
+data:{
+labels:["Total Revenue"],
+datasets:[{
+label:"Finance Revenue",
+data:[revenue]
+}]
+}
+});
+
+}
+
+}

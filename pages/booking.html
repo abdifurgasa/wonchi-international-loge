@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Booking System</title>
+
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>🏨 Room Booking Enterprise Module</h2>
+
+<input type="text" id="customerName" placeholder="Customer Name"><br>
+<input type="text" id="phone" placeholder="Phone"><br>
+
+<select id="roomSelect"></select><br>
+
+<label>Check In</label>
+<input type="date" id="checkIn"><br>
+
+<label>Check Out</label>
+<input type="date" id="checkOut"><br>
+
+<button onclick="createBooking()">✅ Reserve Room</button>
+
+<hr>
+
+<h3>Booking List</h3>
+
+<div id="bookingList"></div>
+
+</div>
+
+<script type="module" src="../js/booking.js"></script>
+
+</body>
+</html>

@@ -1,84 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Wanci Lodge Login</title>
+<title id="title">Wonchi International Loge</title>
 
 <link rel="stylesheet" href="css/style.css">
 
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:url("images/login-bg.jpg") center/cover;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-box{
+    background:white;
+    padding:35px;
+    width:320px;
+    border-radius:20px;
+    box-shadow:0 0 25px rgba(0,0,0,.2);
+}
+
+h2{
+    text-align:center;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#0b6efd;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.eye{
+    float:right;
+    margin-top:-38px;
+    margin-right:10px;
+    cursor:pointer;
+}
+
+label{
+    font-weight:bold;
+}
+
+</style>
 </head>
 
-<body class="login-body">
+<body>
 
 <div class="login-box">
 
-<h2>Wanci International Lodge</h2>
+<h2 id="loginTitle">Wonchi International Loge</h2>
 
-<input type="email" id="emailInput" placeholder="Email">
+<select onchange="changeLanguage(this.value)">
+<option value="english">English</option>
+<option value="amharic">Amharic</option>
+<option value="afan-oromo">Afaan Oromo</option>
+</select>
 
-<input type="password" id="passwordInput" placeholder="Password">
+<br>
 
-<button onclick="login()">Login</button>
+<label id="emailLabel">Email</label>
+<input type="email" id="email">
+
+<label id="passwordLabel">Password</label>
+<input type="password" id="password">
+<span class="eye" onclick="togglePassword()">👁️</span>
+
+<button id="loginBtn" onclick="login()">Login</button>
+
+<p id="error" style="color:red;text-align:center"></p>
 
 </div>
 
-<!-- ⭐ LOGIN SCRIPT -->
+<!-- Scripts -->
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/language.js"></script>
 
-<script type="module">
-
-import { auth } from "./js/firebase.js";
-
-import {
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-/* ===============================
-LOGIN FUNCTION
-=============================== */
-
-window.login = function(){
-
-const email = document.getElementById("emailInput").value;
-const password = document.getElementById("passwordInput").value;
-
-if(!email || !password){
-alert("Enter email and password");
-return;
+<script>
+function togglePassword(){
+    let p=document.getElementById("password");
+    p.type = p.type==="password" ? "text" : "password";
 }
-
-signInWithEmailAndPassword(auth,email,password)
-.then(()=>{
-
-/* Save session */
-
-localStorage.setItem("isLoggedIn","true");
-
-/* Redirect dashboard */
-
-window.location.href="dashboard.html";
-
-})
-.catch(()=>{
-alert("Login Failed");
-});
-
-}
-
-/* ===============================
-AUTO REDIRECT IF LOGGED IN
-=============================== */
-
-window.onload=function(){
-
-if(localStorage.getItem("isLoggedIn")==="true"){
-window.location.href="dashboard.html";
-}
-
-}
-
 </script>
 
 </body>

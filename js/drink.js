@@ -1,35 +1,95 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 
 import {
 collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+addDoc,
+deleteDoc,
+doc,
+getDocs,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ================= DRINK SYSTEM ================= */
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-export async function loadDrinks(){
+/* Permission Check */
+onAuthStateChanged(auth, async(user)=>{
 
-const snapshot =
-await getDocs(collection(db,"drinks"));
+if(!user){
+window.location.href="../index.html";
+return;
+}
 
-const drinkList =
-document.getElementById("drinkList");
+});
 
-if(!drinkList) return;
+/* Add Drink */
+window.addDrink = async function(){
 
-drinkList.innerHTML="";
+let name=document.getElementById("drinkName").value;
+let price=document.getElementById("drinkPrice").value;
+let category=document.getElementById("drinkCategory").value;
 
-snapshot.forEach(docSnap=>{
-const data = docSnap.data();
+let photoFile=document.getElementById("drinkPhoto").files[0];
 
-drinkList.innerHTML+=`
-<div class="card">
+if(!name || !price){
+alert("Fill drink data");
+return;
+}
 
-<h3>${data.name}</h3>
-<p>Price: $${data.price}</p>
+let photoURL="";
 
-</div>
+if(photoFile){
+photoURL = URL.createObjectURL(photoFile);
+}
+
+await addDoc(collection(db,"drinks"),{
+name,
+price:Number(price),
+category,
+photoURL,
+createdAt:serverTimestamp()
+});
+
+alert("Drink Added");
+
+loadDrinks();
+}
+
+/* Load Drinks */
+async function loadDrinks(){
+
+let list=document.getElementById("drinkList");
+
+let snap=await getDocs(collection(db,"drinks"));
+
+list.innerHTML="";
+
+snap.forEach(docData=>{
+
+let drink=docData.data();
+
+let div=document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<h3>${drink.name}</h3>
+<p>Price: ${drink.price}</p>
+<p>Category: ${drink.category}</p>
+<button onclick="deleteDrink('${docData.id}')">Delete</button>
 `;
+
+list.appendChild(div);
+
 });
 
 }
+
+/* Delete Drink */
+window.deleteDrink = async function(id){
+await deleteDoc(doc(db,"drinks",id));
+loadDrinks();
+}
+
+/* Initial Load */
+loadDrinks();

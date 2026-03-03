@@ -13,7 +13,6 @@ getDoc,
 collection,
 getDocs,
 addDoc,
-deleteDoc,
 updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -29,7 +28,7 @@ CONFIG
 ============================= */
 
 const firebaseConfig = {
-apiKey: "AIzaSyDqD...",
+apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
 authDomain: "wanci-international-loge-43dd3.firebaseapp.com",
 projectId: "wanci-international-loge-43dd3",
 storageBucket: "wanci-international-loge-43dd3.appspot.com",
@@ -46,9 +45,11 @@ const storage = getStorage(app);
 /* =============================
 AUTH CHECK
 ============================= */
+
 onAuthStateChanged(auth, async user=>{
 
 if(!user){
+window.location.href="index.html";
 return;
 }
 
@@ -63,62 +64,39 @@ return;
 
 const data = snap.data();
 
-const welcome =
-document.getElementById("welcomeText");
-
-if(welcome){
-welcome.innerText =
+document.getElementById("welcomeText").innerText =
 "Welcome "+data.name+" ("+data.role+")";
-}
 
-/* Load Dashboard Data AFTER AUTH */
-
-setTimeout(()=>{
 loadDashboardData();
 loadRooms();
-loadRoomOptions();
 loadBookingList();
 loadRevenueChart();
-},500);
 
 });
 
 /* =============================
-AUTO CHECKOUT ENGINE
+PAGE CONTROL
 ============================= */
 
-async function autoCheckoutSystem(){
+window.showPage = function(page){
 
-const today =
-new Date().toISOString().split("T")[0];
-
-const snapshot =
-await getDocs(collection(db,"bookings"));
-
-snapshot.forEach(async docSnap=>{
-
-const data = docSnap.data();
-
-if(data.checkOut < today){
-
-await updateDoc(doc(db,"rooms",data.roomId),{
-status:"Available"
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
 });
 
-await updateDoc(doc(db,"bookings",docSnap.id),{
-status:"Completed"
-});
+document.getElementById(page).classList.add("active");
 
 }
 
-});
+window.toggleMenu = function(){
+
+document.getElementById("sidebar")
+.classList.toggle("collapsed");
 
 }
-
-setInterval(autoCheckoutSystem,60000);
 
 /* =============================
-ROOM PRICE TABLE
+ROOM PRICE AUTO TABLE
 ============================= */
 
 const ROOM_PRICES = {
@@ -129,12 +107,13 @@ Smart:2500,
 VIP:5000
 };
 
-window.setAutoPrice=function(){
+window.setAutoPrice = function(){
 
-const type=document.getElementById("roomType").value;
+const type =
+document.getElementById("roomType").value;
 
-document.getElementById("roomPrice").value=
-ROOM_PRICES[type]||"";
+document.getElementById("roomPrice").value =
+ROOM_PRICES[type] || "";
 
 }
 
@@ -142,15 +121,22 @@ ROOM_PRICES[type]||"";
 ADD ROOM
 ============================= */
 
-window.addRoom=async function(){
+window.addRoom = async function(){
 
-const number=document.getElementById("roomNumber").value;
-const type=document.getElementById("roomType").value;
-const price=document.getElementById("roomPrice").value;
-const photoFile=document.getElementById("roomPhoto").files[0];
+const number =
+document.getElementById("roomNumber").value;
 
-if(!number||!type||!price){
-alert("Fill all fields");
+const type =
+document.getElementById("roomType").value;
+
+const price =
+document.getElementById("roomPrice").value;
+
+const photoFile =
+document.getElementById("roomPhoto").files[0];
+
+if(!number || !type || !price){
+alert("Fill all room fields");
 return;
 }
 
@@ -158,12 +144,12 @@ let photoURL="";
 
 if(photoFile){
 
-const storageRef=
+const storageRef =
 ref(storage,"rooms/"+Date.now()+"_"+photoFile.name);
 
 await uploadBytes(storageRef,photoFile);
 
-photoURL=
+photoURL =
 await getDownloadURL(storageRef);
 }
 
@@ -175,10 +161,48 @@ photo:photoURL,
 status:"Available"
 });
 
+alert("Room Added");
+
 loadRooms();
 loadDashboardData();
 
-alert("Room Added");
+}
+
+/* =============================
+LOAD ROOMS
+============================= */
+
+async function loadRooms(){
+
+const snapshot =
+await getDocs(collection(db,"rooms"));
+
+const list =
+document.getElementById("roomList");
+
+if(!list) return;
+
+list.innerHTML="";
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+list.innerHTML += `
+<div class="card">
+
+<img src="${data.photo || 'https://via.placeholder.com/200'}" width="100%">
+
+<h3>Room ${data.number}</h3>
+
+<p>Type: ${data.type}</p>
+<p>Price: $${data.price}</p>
+<p>Status: ${data.status}</p>
+
+</div>
+`;
+
+});
 
 }
 
@@ -186,24 +210,33 @@ alert("Room Added");
 BOOKING SYSTEM
 ============================= */
 
-window.createBooking=async function(){
+window.createBooking = async function(){
 
-const guest=document.getElementById("guestName").value;
-const roomId=document.getElementById("bookingRoom").value;
-const checkIn=document.getElementById("checkIn").value;
-const checkOut=document.getElementById("checkOut").value;
+const guest =
+document.getElementById("guestName").value;
 
-if(!guest||!roomId){
+const roomId =
+document.getElementById("bookingRoom").value;
+
+const checkIn =
+document.getElementById("checkIn").value;
+
+const checkOut =
+document.getElementById("checkOut").value;
+
+if(!guest || !roomId){
 alert("Fill booking data");
 return;
 }
 
-const roomSnap=
+const roomSnap =
 await getDoc(doc(db,"rooms",roomId));
 
-const price=parseFloat(roomSnap.data().price);
+const price =
+parseFloat(roomSnap.data().price);
 
-const days=Math.max(
+const days =
+Math.max(
 1,
 Math.ceil(
 (new Date(checkOut)-new Date(checkIn))
@@ -211,7 +244,7 @@ Math.ceil(
 )
 );
 
-const totalBill=days*price;
+const totalBill = days * price;
 
 await addDoc(collection(db,"bookings"),{
 guest,
@@ -227,10 +260,81 @@ await updateDoc(doc(db,"rooms",roomId),{
 status:"Booked"
 });
 
+alert("Booking Created\nTotal Bill: $"+totalBill);
+
 loadRooms();
 loadBookingList();
 
-alert("Booking Created\nTotal Bill: $"+totalBill);
+}
+
+/* =============================
+BOOKING LIST
+============================= */
+
+async function loadBookingList(){
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+const list =
+document.getElementById("bookingList");
+
+if(!list) return;
+
+list.innerHTML="";
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+list.innerHTML += `
+<div class="card">
+
+<h3>${data.guest}</h3>
+<p>Bill: $${data.totalBill}</p>
+<p>Status: ${data.status}</p>
+
+<button onclick="generateInvoice('${docSnap.id}')">
+Download Invoice
+</button>
+
+</div>
+`;
+
+});
+
+}
+
+/* =============================
+REVENUE CHART
+============================= */
+
+async function loadRevenueChart(){
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+let totalRevenue=0;
+
+snapshot.forEach(docSnap=>{
+totalRevenue += docSnap.data().totalBill || 0;
+});
+
+const ctx =
+document.getElementById("revenueChart");
+
+if(!ctx) return;
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Revenue"],
+datasets:[{
+label:"Revenue",
+data:[totalRevenue]
+}]
+}
+});
 
 }
 
@@ -238,9 +342,9 @@ alert("Booking Created\nTotal Bill: $"+totalBill);
 INVOICE GENERATOR
 ============================= */
 
-window.generateInvoice=async function(bookingId){
+window.generateInvoice = async function(bookingId){
 
-const snap=
+const snap =
 await getDoc(doc(db,"bookings",bookingId));
 
 if(!snap.exists()){
@@ -248,24 +352,16 @@ alert("Booking not found");
 return;
 }
 
-const data=snap.data();
+const data = snap.data();
 
-if(!window.jspdf){
-alert("Invoice library missing");
-return;
-}
+const { jsPDF } = window.jspdf;
 
-const { jsPDF }=window.jspdf;
-
-const pdf=new jsPDF();
+const pdf = new jsPDF();
 
 pdf.text("Hotel Invoice",20,20);
 
 pdf.text("Guest: "+data.guest,20,40);
-pdf.text("CheckIn: "+data.checkIn,20,50);
-pdf.text("CheckOut: "+data.checkOut,20,60);
-pdf.text("Total Bill: $"+(data.totalBill||0),20,70);
-pdf.text("Status: "+data.status,20,80);
+pdf.text("Total Bill: $"+data.totalBill,20,60);
 
 pdf.save("invoice.pdf");
 
@@ -275,8 +371,10 @@ pdf.save("invoice.pdf");
 LOGOUT
 ============================= */
 
-window.logout=function(){
+window.logout = function(){
+
 signOut(auth).then(()=>{
 window.location.href="index.html";
 });
+
 }

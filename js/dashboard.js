@@ -269,7 +269,41 @@ loadRooms();
 loadBookingList();
 
 }
+/* =============================
+REVENUE CHART
+============================= */
 
+async function loadRevenueChart(){
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+let totalRevenue = 0;
+
+snapshot.forEach(docSnap=>{
+totalRevenue += docSnap.data().totalBill || 0;
+});
+
+const ctx =
+document.getElementById("revenueChart");
+
+if(!ctx) return;
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Revenue"],
+datasets:[{
+label:"Total Revenue",
+data:[totalRevenue]
+}]
+}
+});
+
+}
+
+/* Auto Call Chart Loader */
+loadRevenueChart();
 /* =============================
 LOGOUT
 ============================= */

@@ -1,9 +1,11 @@
 /* =====================================================
 Wanci International Lodge
-Professional Dashboard Engine
+PROFESSIONAL DASHBOARD ENGINE (FIXED VERSION)
 ===================================================== */
 
 import { protectDashboard, logoutSystem } from "./auth.js";
+
+import "https://cdn.jsdelivr.net/npm/chart.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -20,20 +22,29 @@ getDoc
 /* ================= FIREBASE CONFIG ================= */
 
 const firebaseConfig = {
-apiKey:"AlzaSyDqB7Igrso8OEBIL6ad3OtciFhIk9TdE",
+apiKey:"AlzaSyDqB7Igrso8OEBIL6ad3OtciFqHIk9TdE",
 authDomain:"wanci-international-loge.firebaseapp.com",
 projectId:"wanci-international-loge",
 storageBucket:"wanci-international-loge.appspot.com",
 messagingSenderId:"346207231234",
-appId:"1:346207231234:web:4688a6"
+appId:"REPLACE_WITH_REAL_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ================= SECURITY ================= */
+/* ================= SYSTEM INIT ================= */
+
+window.onload=function(){
 
 protectDashboard();
+
+loadRooms();
+loadBookingList();
+loadFoods();
+loadFinanceAnalytics();
+
+}
 
 /* ================= PAGE CONTROL ================= */
 
@@ -120,9 +131,12 @@ alert("Fill booking fields");
 return;
 }
 
-/* Fetch Room */
-
 const roomRef = await getDoc(doc(db,"rooms",roomId));
+
+if(!roomRef.exists()){
+alert("Room not found");
+return;
+}
 
 const roomData = roomRef.data();
 
@@ -155,6 +169,15 @@ status:"Booked"
 
 await updateDoc(doc(db,"rooms",roomId),{
 status:"Booked"
+});
+
+/* Finance Ledger */
+
+await addDoc(collection(db,"finance"),{
+service:"Room Booking",
+name:guest,
+amount:totalBill,
+date:new Date().toISOString()
 });
 
 alert("Booking Created");
@@ -204,6 +227,15 @@ return;
 await addDoc(collection(db,"foods"),{
 name,
 price
+});
+
+/* Finance Ledger */
+
+await addDoc(collection(db,"finance"),{
+service:"Food Service",
+name:name,
+amount:price,
+date:new Date().toISOString()
 });
 
 alert("Food Added");
@@ -265,18 +297,41 @@ bookingList.innerHTML+=`
 
 }
 
-/* ================= LOGOUT ================= */
+/* ================= FINANCE ANALYTICS ================= */
+
+async function loadFinanceAnalytics(){
+
+const snapshot =
+await getDocs(collection(db,"finance"));
+
+let totalRevenue = 0;
+
+snapshot.forEach(docSnap=>{
+totalRevenue += docSnap.data().amount || 0;
+});
+
+const ctx =
+document.getElementById("revenueChart");
+
+if(ctx){
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Total Revenue"],
+datasets:[{
+label:"Finance Revenue",
+data:[totalRevenue]
+}]
+}
+});
+
+}
+
+}
+
+/* ================= REST FUNCTIONS ================= */
 
 window.logout=function(){
 logoutSystem();
-}
-
-/* ================= SYSTEM INIT ================= */
-
-window.onload=function(){
-
-loadRooms();
-loadBookingList();
-loadFoods();
-
-}
+                        }

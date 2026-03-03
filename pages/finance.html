@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Finance Management</title>
+
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>💰 Finance Enterprise Module</h2>
+
+<div class="card">
+
+<select id="financeType">
+<option value="income">Income</option>
+<option value="expense">Expense</option>
+</select>
+
+<input type="number" id="amount" placeholder="Amount"><br>
+
+<input type="text" id="description" placeholder="Description"><br>
+
+<button onclick="addTransaction()">➕ Record Transaction</button>
+
+</div>
+
+<hr>
+
+<h3>Transaction History</h3>
+
+<div id="financeList"></div>
+
+</div>
+
+<script type="module" src="../js/finance.js"></script>
+
+</body>
+</html>

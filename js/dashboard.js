@@ -45,6 +45,7 @@ const storage = getStorage(app);
 /* =============================
 AUTH CHECK
 ============================= */
+
 onAuthStateChanged(auth, async user=>{
 
 if(!user){
@@ -62,8 +63,6 @@ return;
 
 const data = snap.data();
 
-/* Show Welcome Text */
-
 const welcome =
 document.getElementById("welcomeText");
 
@@ -72,7 +71,7 @@ welcome.innerText =
 "Welcome "+data.name+" ("+data.role+")";
 }
 
-/* Security Layer */
+/* Worker Security Layer */
 
 if(data.role === "worker"){
 
@@ -89,6 +88,7 @@ loadDashboardData();
 loadRooms();
 loadRoomOptions();
 loadBookingList();
+loadRevenueChart();
 
 });
 
@@ -124,7 +124,6 @@ status:"Completed"
 
 }
 
-/* Run auto checkout every 60 seconds */
 setInterval(autoCheckoutSystem,60000);
 
 /* =============================
@@ -245,8 +244,6 @@ Math.ceil(
 const totalBill =
 days * price;
 
-/* Save Booking */
-
 await addDoc(collection(db,"bookings"),{
 guest,
 roomId,
@@ -256,8 +253,6 @@ days,
 totalBill,
 status:"Booked"
 });
-
-/* Update Room */
 
 await updateDoc(doc(db,"rooms",roomId),{
 status:"Booked"
@@ -269,6 +264,47 @@ loadRooms();
 loadBookingList();
 
 }
+
+/* =============================
+INVOICE GENERATOR
+============================= */
+
+window.generateInvoice = async function(bookingId){
+
+const snap =
+await getDoc(doc(db,"bookings",bookingId));
+
+if(!snap.exists()){
+alert("Booking not found");
+return;
+}
+
+const data = snap.data();
+
+if(!window.jspdf){
+alert("Invoice library missing");
+return;
+}
+
+const { jsPDF } = window.jspdf;
+
+const pdf = new jsPDF();
+
+pdf.setFontSize(16);
+pdf.text("Hotel Invoice",20,20);
+
+pdf.setFontSize(12);
+
+pdf.text("Guest: "+data.guest,20,40);
+pdf.text("CheckIn: "+data.checkIn,20,50);
+pdf.text("CheckOut: "+data.checkOut,20,60);
+pdf.text("Total Bill: $"+(data.totalBill||0),20,70);
+pdf.text("Status: "+data.status,20,80);
+
+pdf.save("invoice.pdf");
+
+}
+
 /* =============================
 REVENUE CHART
 ============================= */
@@ -302,8 +338,32 @@ data:[totalRevenue]
 
 }
 
-/* Auto Call Chart Loader */
-loadRevenueChart();
+/* =============================
+UI CONTROL
+============================= */
+
+window.toggleMenu = function(){
+
+document.getElementById("sidebar")
+.classList.toggle("collapsed");
+
+document.querySelector(".main")
+.classList.toggle("collapsed");
+
+}
+
+window.showPage = function(pageId){
+
+document.querySelectorAll(".page")
+.forEach(page=>{
+page.classList.remove("active");
+});
+
+document.getElementById(pageId)
+.classList.add("active");
+
+}
+
 /* =============================
 LOGOUT
 ============================= */
@@ -312,4 +372,4 @@ window.logout = function(){
 signOut(auth).then(()=>{
 window.location.href="index.html";
 });
-}
+         }

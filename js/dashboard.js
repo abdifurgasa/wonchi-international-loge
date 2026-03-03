@@ -53,10 +53,11 @@ window.location.href="index.html";
 return;
 }
 
-const snap = await getDoc(doc(db,"users",user.email));
+const snap =
+await getDoc(doc(db,"users",user.email));
 
 if(!snap.exists()){
-alert("Role is not assigned");
+alert("Role not assigned");
 return;
 }
 
@@ -71,6 +72,41 @@ loadRoomOptions();
 loadBookingList();
 
 });
+
+/* =============================
+AUTO CHECKOUT ENGINE
+============================= */
+
+async function autoCheckoutSystem(){
+
+const today =
+new Date().toISOString().split("T")[0];
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+snapshot.forEach(async docSnap=>{
+
+const data = docSnap.data();
+
+if(data.checkOut < today){
+
+await updateDoc(doc(db,"rooms",data.roomId),{
+status:"Available"
+});
+
+await updateDoc(doc(db,"bookings",docSnap.id),{
+status:"Completed"
+});
+
+}
+
+});
+
+}
+
+/* Run auto checkout every 60 seconds */
+setInterval(autoCheckoutSystem,60000);
 
 /* =============================
 ROOM PRICE TABLE
@@ -90,7 +126,8 @@ AUTO PRICE
 
 window.setAutoPrice = function(){
 
-const type = document.getElementById("roomType").value;
+const type =
+document.getElementById("roomType").value;
 
 document.getElementById("roomPrice").value =
 ROOM_PRICES[type] || "";
@@ -103,10 +140,17 @@ ADD ROOM
 
 window.addRoom = async function(){
 
-const number = document.getElementById("roomNumber").value;
-const type = document.getElementById("roomType").value;
-const price = document.getElementById("roomPrice").value;
-const photoFile = document.getElementById("roomPhoto").files[0];
+const number =
+document.getElementById("roomNumber").value;
+
+const type =
+document.getElementById("roomType").value;
+
+const price =
+document.getElementById("roomPrice").value;
+
+const photoFile =
+document.getElementById("roomPhoto").files[0];
 
 if(!number || !type || !price){
 alert("Fill all fields");
@@ -122,7 +166,8 @@ ref(storage,"rooms/"+Date.now()+"_"+photoFile.name);
 
 await uploadBytes(storageRef,photoFile);
 
-photoURL = await getDownloadURL(storageRef);
+photoURL =
+await getDownloadURL(storageRef);
 }
 
 await addDoc(collection(db,"rooms"),{
@@ -141,132 +186,8 @@ loadDashboardData();
 }
 
 /* =============================
-LOAD DASHBOARD COUNTER
-============================= */
-
-async function loadDashboardData(){
-
-const snapshot =
-await getDocs(collection(db,"rooms"));
-
-document.getElementById("totalRooms").innerText =
-snapshot.size;
-
-}
-
-/* =============================
-LOAD ROOM LIST
-============================= */
-
-async function loadRooms(){
-
-const snapshot =
-await getDocs(collection(db,"rooms"));
-
-const roomList =
-document.getElementById("roomList");
-
-if(!roomList) return;
-
-roomList.innerHTML="";
-
-snapshot.forEach(docSnap=>{
-
-const data = docSnap.data();
-
-roomList.innerHTML += `
-<div class="room-card">
-
-<img src="${data.photo || 'https://via.placeholder.com/250'}">
-
-<h3>Room ${data.number}</h3>
-
-<p>Type: ${data.type}</p>
-<p>Price: $${data.price}</p>
-
-<p>Status: ${data.status}</p>
-
-<select onchange="changeStatus('${docSnap.id}',this.value)">
-<option ${data.status==="Available"?"selected":""}>Available</option>
-<option ${data.status==="Booked"?"selected":""}>Booked</option>
-<option ${data.status==="Maintenance"?"selected":""}>Maintenance</option>
-</select>
-
-<button onclick="deleteRoom('${docSnap.id}')">
-Delete
-</button>
-
-</div>
-`;
-
-});
-
-}
-
-/* =============================
-CHANGE STATUS
-============================= */
-
-window.changeStatus = async function(id,status){
-
-await updateDoc(doc(db,"rooms",id),{
-status:status
-});
-
-loadRooms();
-
-}
-
-/* =============================
-DELETE ROOM
-============================= */
-
-window.deleteRoom = async function(id){
-
-if(confirm("Delete room?")){
-
-await deleteDoc(doc(db,"rooms",id));
-
-loadRooms();
-loadDashboardData();
-
-}
-
-}
-
-/* =============================
 BOOKING SYSTEM
 ============================= */
-
-async function loadRoomOptions(){
-
-const snapshot =
-await getDocs(collection(db,"rooms"));
-
-const select =
-document.getElementById("bookingRoom");
-
-if(!select) return;
-
-select.innerHTML="";
-
-snapshot.forEach(docSnap=>{
-
-const data = docSnap.data();
-
-if(data.status==="Available"){
-
-select.innerHTML += `
-<option value="${docSnap.id}">
-Room ${data.number} (${data.type})
-</option>
-`;
-
-}
-
-});
-
-}
 
 window.createBooking = async function(){
 
@@ -287,6 +208,24 @@ alert("Fill booking data");
 return;
 }
 
+const roomSnap =
+await getDoc(doc(db,"rooms",roomId));
+
+const price =
+parseFloat(roomSnap.data().price);
+
+const days =
+Math.max(
+1,
+Math.ceil(
+(new Date(checkOut)-new Date(checkIn))
+/(1000*60*60*24)
+)
+);
+
+const totalBill =
+days * price;
+
 /* Save Booking */
 
 await addDoc(collection(db,"bookings"),{
@@ -294,86 +233,21 @@ guest,
 roomId,
 checkIn,
 checkOut,
+days,
+totalBill,
 status:"Booked"
 });
 
-/* Update Room Status */
+/* Update Room */
 
 await updateDoc(doc(db,"rooms",roomId),{
 status:"Booked"
 });
 
-alert("Booking Created");
+alert("Booking Created\nTotal Bill: $"+totalBill);
 
 loadRooms();
 loadBookingList();
-
-}
-
-async function loadBookingList(){
-
-const snapshot =
-await getDocs(collection(db,"bookings"));
-
-const list =
-document.getElementById("bookingList");
-
-if(!list) return;
-
-list.innerHTML="";
-
-snapshot.forEach(docSnap=>{
-
-const data = docSnap.data();
-
-list.innerHTML += `
-<div class="card">
-
-Guest: ${data.guest}
-<br>
-CheckIn: ${data.checkIn}
-<br>
-CheckOut: ${data.checkOut}
-<br>
-Status: ${data.status}
-
-</div>
-`;
-
-});
-
-}
-
-/* Auto Load Booking System */
-
-function loadBookingSystem(){
-loadRoomOptions();
-loadBookingList();
-}
-
-/* =============================
-UI CONTROL
-============================= */
-
-window.toggleMenu = function(){
-
-document.getElementById("sidebar")
-.classList.toggle("collapsed");
-
-document.querySelector(".main")
-.classList.toggle("collapsed");
-
-}
-
-window.showPage = function(pageId){
-
-document.querySelectorAll(".page")
-.forEach(page=>{
-page.classList.remove("active");
-});
-
-document.getElementById(pageId)
-.classList.add("active");
 
 }
 

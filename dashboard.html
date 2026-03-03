@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Wanci International Lodge Dashboard</title>
 
 <link rel="stylesheet" href="css/dashboard.css">
+
+<!-- ================= LIBRARIES ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- ================= SIDEBAR ================= -->
+
 <div class="sidebar" id="sidebar">
+
 <h2>Wanci Lodge</h2>
 
 <ul>
+
 <li onclick="showPage('home')">🏠 Dashboard</li>
 <li onclick="showPage('rooms')">🛏 Rooms</li>
 <li onclick="showPage('booking')">📅 Booking</li>
 <li onclick="logout()">🚪 Logout</li>
+
 </ul>
+
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- ================= MAIN ================= -->
+
 <div class="main">
 
 <div class="topbar">
@@ -33,6 +49,7 @@
 <div class="content">
 
 <!-- ================= HOME PAGE ================= -->
+
 <div class="page active" id="home">
 
 <div class="card">
@@ -45,15 +62,19 @@
 <h1 id="totalRooms">0</h1>
 </div>
 
-</div>
 <div class="card">
 <h2>Revenue Analytics</h2>
 <canvas id="revenueChart"></canvas>
 </div>
+
+</div>
+
 <!-- ================= ROOMS PAGE ================= -->
+
 <div class="page" id="rooms">
 
 <div class="card">
+
 <h2>Add New Room</h2>
 
 <input type="text" id="roomNumber" placeholder="Room Number">
@@ -75,13 +96,16 @@
 </div>
 
 <div class="card">
+
 <h2>Room List</h2>
 <div id="roomList" class="room-grid"></div>
+
 </div>
 
 </div>
 
 <!-- ================= BOOKING PAGE ================= -->
+
 <div class="page" id="booking">
 
 <div class="card">
@@ -95,24 +119,26 @@
 <input type="date" id="checkIn">
 <input type="date" id="checkOut">
 
-<button onclick="createBooking()">Create Booking</button>
+<button onclick="createBooking()">
+Create Booking
+</button>
 
 </div>
 
 <div class="card">
+
 <h2>Booking List</h2>
 <div id="bookingList"></div>
+
 </div>
 
 </div>
-</div>
-</div>
-  
-<div class="content">
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
 
 <script type="module" src="js/dashboard.js"></script>
 

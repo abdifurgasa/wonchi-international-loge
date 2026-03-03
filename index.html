@@ -17,26 +17,42 @@ body{
     align-items:center;
 }
 
+/* Animated Login Box */
 .login-box{
     background:white;
     padding:35px;
     width:320px;
     border-radius:20px;
     box-shadow:0 0 25px rgba(0,0,0,.2);
+
+    animation: fadeIn 1s ease-in-out;
 }
 
+/* Title Animation */
 h2{
     text-align:center;
+    animation: slideDown 1s ease;
 }
 
+/* Inputs */
 input,select{
     width:100%;
     padding:12px;
     margin:10px 0;
     border-radius:10px;
     border:1px solid #ccc;
+
+    transition:0.3s;
 }
 
+/* Input Hover Effect */
+input:focus{
+    border-color:#0b6efd;
+    outline:none;
+    transform:scale(1.02);
+}
+
+/* Button Animation */
 button{
     width:100%;
     padding:12px;
@@ -46,8 +62,16 @@ button{
     border-radius:10px;
     cursor:pointer;
     font-size:16px;
+
+    transition:0.3s;
 }
 
+button:hover{
+    background:#084bb5;
+    transform:scale(1.05);
+}
+
+/* Eye Icon */
 .eye{
     float:right;
     margin-top:-38px;
@@ -55,10 +79,28 @@ button{
     cursor:pointer;
 }
 
-label{
-    font-weight:bold;
+/* Animations */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
+@keyframes slideDown{
+    from{
+        opacity:0;
+        transform:translateY(-30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
 </style>
 </head>
 

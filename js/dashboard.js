@@ -12,8 +12,7 @@ doc,
 getDoc,
 collection,
 getDocs,
-addDoc,
-updateDoc
+addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -23,9 +22,7 @@ uploadBytes,
 getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-/* =============================
-CONFIG
-============================= */
+/* ================= CONFIG ================= */
 
 const firebaseConfig = {
 apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
@@ -37,14 +34,11 @@ appId: "1:441258681939:web:961697760d09b7234688a6"
 };
 
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-/* =============================
-AUTH CHECK
-============================= */
+/* ================= AUTH ================= */
 
 onAuthStateChanged(auth, async user=>{
 
@@ -71,12 +65,11 @@ loadDashboardData();
 loadRooms();
 loadBookingList();
 loadRevenueChart();
+loadRoomOptions();
 
 });
 
-/* =============================
-PAGE CONTROL
-============================= */
+/* ================= PAGE CONTROL ================= */
 
 window.showPage = function(page){
 
@@ -89,15 +82,23 @@ document.getElementById(page).classList.add("active");
 }
 
 window.toggleMenu = function(){
-
 document.getElementById("sidebar")
 .classList.toggle("collapsed");
+}
+
+/* ================= DASHBOARD DATA ================= */
+
+async function loadDashboardData(){
+
+const snapshot =
+await getDocs(collection(db,"rooms"));
+
+document.getElementById("totalRooms").innerText =
+snapshot.size;
 
 }
 
-/* =============================
-ROOM PRICE AUTO TABLE
-============================= */
+/* ================= ROOM PRICE AUTO ================= */
 
 const ROOM_PRICES = {
 Single:800,
@@ -117,9 +118,7 @@ ROOM_PRICES[type] || "";
 
 }
 
-/* =============================
-ADD ROOM
-============================= */
+/* ================= ADD ROOM ================= */
 
 window.addRoom = async function(){
 
@@ -157,20 +156,18 @@ await addDoc(collection(db,"rooms"),{
 number,
 type,
 price,
-photo:photoURL,
-status:"Available"
+photo:photoURL
 });
 
 alert("Room Added");
 
 loadRooms();
 loadDashboardData();
+loadRoomOptions();
 
 }
 
-/* =============================
-LOAD ROOMS
-============================= */
+/* ================= LOAD ROOMS ================= */
 
 async function loadRooms(){
 
@@ -190,15 +187,10 @@ const data = docSnap.data();
 
 list.innerHTML += `
 <div class="card">
-
 <img src="${data.photo || 'https://via.placeholder.com/200'}" width="100%">
-
 <h3>Room ${data.number}</h3>
-
 <p>Type: ${data.type}</p>
 <p>Price: $${data.price}</p>
-<p>Status: ${data.status}</p>
-
 </div>
 `;
 
@@ -206,9 +198,35 @@ list.innerHTML += `
 
 }
 
-/* =============================
-BOOKING SYSTEM
-============================= */
+/* ================= LOAD ROOM OPTIONS ================= */
+
+async function loadRoomOptions(){
+
+const snapshot =
+await getDocs(collection(db,"rooms"));
+
+const select =
+document.getElementById("bookingRoom");
+
+if(!select) return;
+
+select.innerHTML="<option value=''>Select Room</option>";
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+select.innerHTML += `
+<option value="${docSnap.id}">
+Room ${data.number} - $${data.price}
+</option>
+`;
+
+});
+
+}
+
+/* ================= CREATE BOOKING ================= */
 
 window.createBooking = async function(){
 
@@ -224,10 +242,41 @@ document.getElementById("checkIn").value;
 const checkOut =
 document.getElementById("checkOut").value;
 
-if(!guest || !roomId){
+if(!guest || !roomId || !checkIn || !checkOut){
 alert("Fill booking data");
 return;
 }
+
+/* CHECK DATE CONFLICT */
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+let conflict = false;
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+if(data.roomId === roomId){
+
+if(
+(new Date(checkIn) < new Date(data.checkOut)) &&
+(new Date(checkOut) > new Date(data.checkIn))
+){
+conflict = true;
+}
+
+}
+
+});
+
+if(conflict){
+alert("Room already booked for selected dates");
+return;
+}
+
+/* CALCULATE BILL */
 
 const roomSnap =
 await getDoc(doc(db,"rooms",roomId));
@@ -256,20 +305,14 @@ totalBill,
 status:"Booked"
 });
 
-await updateDoc(doc(db,"rooms",roomId),{
-status:"Booked"
-});
-
 alert("Booking Created\nTotal Bill: $"+totalBill);
 
-loadRooms();
 loadBookingList();
+loadRevenueChart();
 
 }
 
-/* =============================
-BOOKING LIST
-============================= */
+/* ================= BOOKING LIST ================= */
 
 async function loadBookingList(){
 
@@ -289,15 +332,11 @@ const data = docSnap.data();
 
 list.innerHTML += `
 <div class="card">
-
 <h3>${data.guest}</h3>
 <p>Bill: $${data.totalBill}</p>
-<p>Status: ${data.status}</p>
-
 <button onclick="generateInvoice('${docSnap.id}')">
 Download Invoice
 </button>
-
 </div>
 `;
 
@@ -305,9 +344,7 @@ Download Invoice
 
 }
 
-/* =============================
-REVENUE CHART
-============================= */
+/* ================= REVENUE CHART ================= */
 
 async function loadRevenueChart(){
 
@@ -330,7 +367,7 @@ type:"bar",
 data:{
 labels:["Revenue"],
 datasets:[{
-label:"Revenue",
+label:"Total Revenue",
 data:[totalRevenue]
 }]
 }
@@ -338,9 +375,7 @@ data:[totalRevenue]
 
 }
 
-/* =============================
-INVOICE GENERATOR
-============================= */
+/* ================= INVOICE ================= */
 
 window.generateInvoice = async function(bookingId){
 
@@ -359,22 +394,19 @@ const { jsPDF } = window.jspdf;
 const pdf = new jsPDF();
 
 pdf.text("Hotel Invoice",20,20);
-
 pdf.text("Guest: "+data.guest,20,40);
-pdf.text("Total Bill: $"+data.totalBill,20,60);
+pdf.text("CheckIn: "+data.checkIn,20,50);
+pdf.text("CheckOut: "+data.checkOut,20,60);
+pdf.text("Total Bill: $"+data.totalBill,20,70);
 
 pdf.save("invoice.pdf");
 
 }
 
-/* =============================
-LOGOUT
-============================= */
+/* ================= LOGOUT ================= */
 
 window.logout = function(){
-
 signOut(auth).then(()=>{
 window.location.href="index.html";
 });
-
-}
+  }

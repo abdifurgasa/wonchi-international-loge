@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Drink Management</title>
+
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>🍹 Drink Enterprise Module</h2>
+
+<div class="card">
+
+<input type="text" id="drinkName" placeholder="Drink Name"><br>
+
+<input type="number" id="drinkPrice" placeholder="Price"><br>
+
+<input type="text" id="drinkCategory" placeholder="Category"><br>
+
+<input type="file" id="drinkPhoto"><br>
+
+<button onclick="addDrink()">➕ Add Drink</button>
+
+</div>
+
+<hr>
+
+<div id="drinkList"></div>
+
+</div>
+
+<script type="module" src="../js/drink.js"></script>
+
+</body>
+</html>

@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Wanci Lodge Login</title>
+
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body class="login-body">
@@ -13,34 +18,31 @@
 <h2>Wanci International Lodge</h2>
 
 <input type="email" id="emailInput" placeholder="Email">
+
 <input type="password" id="passwordInput" placeholder="Password">
 
 <button onclick="login()">Login</button>
 
 </div>
 
+<!-- ⭐ LOGIN SCRIPT -->
+
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth } from "./js/firebase.js";
 
-const firebaseConfig = {
-apiKey:"AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
-authDomain:"wanci-international-loge-43dd3.firebaseapp.com",
-projectId:"wanci-international-loge-43dd3",
-storageBucket:"wanci-international-loge-43dd3.appspot.com",
-messagingSenderId:"441258681939",
-appId:"1:441258681939:web:961697760d09b7234688a6"
-};
+import {
+signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+/* ===============================
+LOGIN FUNCTION
+=============================== */
 
-window.login=function(){
+window.login = function(){
 
-const email=emailInput.value;
-const password=passwordInput.value;
+const email = document.getElementById("emailInput").value;
+const password = document.getElementById("passwordInput").value;
 
 if(!email || !password){
 alert("Enter email and password");
@@ -50,18 +52,24 @@ return;
 signInWithEmailAndPassword(auth,email,password)
 .then(()=>{
 
+/* Save session */
+
 localStorage.setItem("isLoggedIn","true");
+
+/* Redirect dashboard */
 
 window.location.href="dashboard.html";
 
 })
-.catch(e=>{
+.catch(()=>{
 alert("Login Failed");
 });
 
 }
 
-/* Session protection */
+/* ===============================
+AUTO REDIRECT IF LOGGED IN
+=============================== */
 
 window.onload=function(){
 

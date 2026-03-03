@@ -67,6 +67,8 @@ document.getElementById("welcomeText").innerText =
 
 loadDashboardData();
 loadRooms();
+loadRoomOptions();
+loadBookingList();
 
 });
 
@@ -202,7 +204,7 @@ Delete
 }
 
 /* =============================
-CHANGE ROOM STATUS
+CHANGE STATUS
 ============================= */
 
 window.changeStatus = async function(id,status){
@@ -230,6 +232,123 @@ loadDashboardData();
 
 }
 
+}
+
+/* =============================
+BOOKING SYSTEM
+============================= */
+
+async function loadRoomOptions(){
+
+const snapshot =
+await getDocs(collection(db,"rooms"));
+
+const select =
+document.getElementById("bookingRoom");
+
+if(!select) return;
+
+select.innerHTML="";
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+if(data.status==="Available"){
+
+select.innerHTML += `
+<option value="${docSnap.id}">
+Room ${data.number} (${data.type})
+</option>
+`;
+
+}
+
+});
+
+}
+
+window.createBooking = async function(){
+
+const guest =
+document.getElementById("guestName").value;
+
+const roomId =
+document.getElementById("bookingRoom").value;
+
+const checkIn =
+document.getElementById("checkIn").value;
+
+const checkOut =
+document.getElementById("checkOut").value;
+
+if(!guest || !roomId){
+alert("Fill booking data");
+return;
+}
+
+/* Save Booking */
+
+await addDoc(collection(db,"bookings"),{
+guest,
+roomId,
+checkIn,
+checkOut,
+status:"Booked"
+});
+
+/* Update Room Status */
+
+await updateDoc(doc(db,"rooms",roomId),{
+status:"Booked"
+});
+
+alert("Booking Created");
+
+loadRooms();
+loadBookingList();
+
+}
+
+async function loadBookingList(){
+
+const snapshot =
+await getDocs(collection(db,"bookings"));
+
+const list =
+document.getElementById("bookingList");
+
+if(!list) return;
+
+list.innerHTML="";
+
+snapshot.forEach(docSnap=>{
+
+const data = docSnap.data();
+
+list.innerHTML += `
+<div class="card">
+
+Guest: ${data.guest}
+<br>
+CheckIn: ${data.checkIn}
+<br>
+CheckOut: ${data.checkOut}
+<br>
+Status: ${data.status}
+
+</div>
+`;
+
+});
+
+}
+
+/* Auto Load Booking System */
+
+function loadBookingSystem(){
+loadRoomOptions();
+loadBookingList();
 }
 
 /* =============================

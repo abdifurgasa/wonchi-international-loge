@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase.js";
+
 import {
 signInWithEmailAndPassword,
 onAuthStateChanged,
@@ -13,16 +14,26 @@ getDoc
 /* =============================
 Auto Login Redirect Check
 ============================= */
-onAuthStateChanged(auth, async (user)=>{
+
+onAuthStateChanged(auth, async (user) => {
 
 ```
-if(user){
+if (user) {
 
-    const snap = await getDoc(doc(db,"users",user.uid));
+    try {
 
-    if(snap.exists()){
-        window.location.href="dashboard.html";
+        const snap = await getDoc(doc(db, "users", user.uid));
+
+        if (snap.exists()) {
+
+            window.location.href = "dashboard.html";
+
+        }
+
+    } catch (error) {
+        console.error(error);
     }
+
 }
 ```
 
@@ -31,38 +42,63 @@ if(user){
 /* =============================
 Login Function
 ============================= */
-window.login = async function(){
+
+window.login = async function () {
 
 ```
-let email=document.getElementById("email").value;
-let password=document.getElementById("password").value;
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
 
-try{
+if (!email || !password) {
+    document.getElementById("error").innerText = "Enter email and password";
+    return;
+}
+
+try {
 
     const userCredential = await signInWithEmailAndPassword(
-        auth,email,password
+        auth,
+        email,
+        password
     );
 
     const user = userCredential.user;
 
-    const snap = await getDoc(doc(db,"users",user.uid));
+    /* Check Firestore User Profile */
 
-    if(snap.exists()){
+    const snap = await getDoc(doc(db, "users", user.uid));
 
-        let role=snap.data().role;
+    if (snap.exists()) {
 
-        if(role==="admin"){
-            window.location.href="dashboard.html";
-        }
-        else{
-            document.getElementById("error").innerText="Access denied!";
+        let role = snap.data().role;
+
+        if (role) {
+
+            window.location.href = "dashboard.html";
+
+        } else {
+
+            document.getElementById("error").innerText = "Access denied";
+
             signOut(auth);
+
         }
+
+    } else {
+
+        document.getElementById("error").innerText = "User profile not found";
+
+        signOut(auth);
+
     }
 
-}catch(error){
-    document.getElementById("error").innerText="Login failed!";
+} catch (error) {
+
+    document.getElementById("error").innerText = "Login failed";
+
+    console.error(error);
+
 }
 ```
 
-}
+};

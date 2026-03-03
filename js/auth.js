@@ -1,25 +1,68 @@
-/* =====================================
-DASHBOARD SECURITY ENGINE
-===================================== */
+import { auth, db } from "./firebase.js";
+import {
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-export function protectDashboard(){
+import {
+doc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* Check login session */
+/* =============================
+Auto Login Redirect Check
+============================= */
+onAuthStateChanged(auth, async (user)=>{
 
-if(localStorage.getItem("isLoggedIn")!=="true"){
-window.location.href="index.html";
-return;
+```
+if(user){
+
+    const snap = await getDoc(doc(db,"users",user.uid));
+
+    if(snap.exists()){
+        window.location.href="dashboard.html";
+    }
 }
+```
 
+});
+
+/* =============================
+Login Function
+============================= */
+window.login = async function(){
+
+```
+let email=document.getElementById("email").value;
+let password=document.getElementById("password").value;
+
+try{
+
+    const userCredential = await signInWithEmailAndPassword(
+        auth,email,password
+    );
+
+    const user = userCredential.user;
+
+    const snap = await getDoc(doc(db,"users",user.uid));
+
+    if(snap.exists()){
+
+        let role=snap.data().role;
+
+        if(role==="admin"){
+            window.location.href="dashboard.html";
+        }
+        else{
+            document.getElementById("error").innerText="Access denied!";
+            signOut(auth);
+        }
+    }
+
+}catch(error){
+    document.getElementById("error").innerText="Login failed!";
 }
-
-/* =====================================
-LOGOUT FUNCTION
-===================================== */
-
-export function logoutSystem(){
-
-localStorage.removeItem("isLoggedIn");
-window.location.href="index.html";
+```
 
 }

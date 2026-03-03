@@ -46,14 +46,7 @@ const storage = getStorage(app);
 /* =============================
 AUTH CHECK
 ============================= */
-let authReady = false;
-
 onAuthStateChanged(auth, async user=>{
-
-if(!authReady){
-authReady = true;
-return;
-}
 
 if(!user){
 return;
@@ -78,10 +71,15 @@ welcome.innerText =
 "Welcome "+data.name+" ("+data.role+")";
 }
 
+/* Load Dashboard Data AFTER AUTH */
+
+setTimeout(()=>{
 loadDashboardData();
 loadRooms();
 loadRoomOptions();
 loadBookingList();
+loadRevenueChart();
+},500);
 
 });
 

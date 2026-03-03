@@ -1,36 +1,95 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 
 import {
 collection,
 addDoc,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+deleteDoc,
+doc,
+getDocs,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ================= FOOD SYSTEM ================= */
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-export async function loadFoods(){
+/* Permission Check */
+onAuthStateChanged(auth, async(user)=>{
 
-const snapshot =
-await getDocs(collection(db,"foods"));
+if(!user){
+window.location.href="../index.html";
+return;
+}
 
-const foodList =
-document.getElementById("foodList");
+});
 
-if(!foodList) return;
+/* Add Food */
+window.addFood = async function(){
 
-foodList.innerHTML="";
+let name=document.getElementById("foodName").value;
+let price=document.getElementById("foodPrice").value;
+let category=document.getElementById("foodCategory").value;
 
-snapshot.forEach(docSnap=>{
-const data = docSnap.data();
+let photoFile=document.getElementById("foodPhoto").files[0];
 
-foodList.innerHTML+=`
-<div class="card">
+if(!name || !price){
+alert("Fill food data");
+return;
+}
 
-<h3>${data.name}</h3>
-<p>Price: $${data.price}</p>
+let photoURL="";
 
-</div>
+if(photoFile){
+photoURL = URL.createObjectURL(photoFile);
+}
+
+await addDoc(collection(db,"foods"),{
+name,
+price:Number(price),
+category,
+photoURL,
+createdAt:serverTimestamp()
+});
+
+alert("Food Added");
+
+loadFoods();
+}
+
+/* Load Foods */
+async function loadFoods(){
+
+let list=document.getElementById("foodList");
+
+let snap=await getDocs(collection(db,"foods"));
+
+list.innerHTML="";
+
+snap.forEach(docData=>{
+
+let food=docData.data();
+
+let div=document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<h3>${food.name}</h3>
+<p>Price: ${food.price}</p>
+<p>Category: ${food.category}</p>
+<button onclick="deleteFood('${docData.id}')">Delete</button>
 `;
+
+list.appendChild(div);
+
 });
 
 }
+
+/* Delete Food */
+window.deleteFood = async function(id){
+await deleteDoc(doc(db,"foods",id));
+loadFoods();
+}
+
+/* Initial Load */
+loadFoods();

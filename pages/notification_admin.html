@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Notification Admin Panel</title>
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>🔔 Notification Broadcast</h2>
+
+<input type="text" id="title" placeholder="Title"><br>
+<textarea id="message" placeholder="Message"></textarea><br>
+
+<select id="targetRole">
+<option value="all">All Staff</option>
+<option value="admin">Admin</option>
+<option value="manager">Manager</option>
+<option value="receptionist">Receptionist</option>
+<option value="worker">Worker</option>
+<option value="kitchen">Kitchen</option>
+<option value="barman">Barman</option>
+</select>
+
+<br><br>
+
+<button onclick="sendNotification()">Send Notification</button>
+
+</div>
+
+<script type="module" src="../js/notification_admin.js"></script>
+
+</body>
+</html>

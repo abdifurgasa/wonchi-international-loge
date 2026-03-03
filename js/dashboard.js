@@ -45,7 +45,6 @@ const storage = getStorage(app);
 /* =============================
 AUTH CHECK
 ============================= */
-
 onAuthStateChanged(auth, async user=>{
 
 if(!user){
@@ -63,8 +62,28 @@ return;
 
 const data = snap.data();
 
-document.getElementById("welcomeText").innerText =
+/* Show Welcome Text */
+
+const welcome =
+document.getElementById("welcomeText");
+
+if(welcome){
+welcome.innerText =
 "Welcome "+data.name+" ("+data.role+")";
+}
+
+/* Security Layer */
+
+if(data.role === "worker"){
+
+const adminMenu =
+document.getElementById("adminPanelMenu");
+
+if(adminMenu){
+adminMenu.remove();
+}
+
+}
 
 loadDashboardData();
 loadRooms();

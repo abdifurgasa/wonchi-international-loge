@@ -13,7 +13,8 @@ getDoc,
 collection,
 getDocs,
 addDoc,
-deleteDoc
+deleteDoc,
+updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -45,7 +46,7 @@ const storage = getStorage(app);
 AUTH CHECK
 ============================= */
 
-onAuthStateChanged(auth, async (user)=>{
+onAuthStateChanged(auth, async user=>{
 
 if(!user){
 window.location.href="index.html";
@@ -89,7 +90,6 @@ AUTO PRICE SYSTEM
 window.setAutoPrice = function(){
 
 const type = document.getElementById("roomType").value;
-const priceInput = document.getElementById("roomPrice");
 
 const prices = {
 Single:800,
@@ -99,7 +99,8 @@ Smart:2500,
 VIP:5000
 };
 
-priceInput.value = prices[type] || "";
+document.getElementById("roomPrice").value =
+prices[type] || "";
 
 }
 
@@ -119,11 +120,15 @@ alert("Fill all fields");
 return;
 }
 
-let photoURL = "";
+let photoURL="";
 
 if(photoFile){
-const storageRef = ref(storage,"rooms/"+Date.now()+"_"+photoFile.name);
+
+const storageRef =
+ref(storage,"rooms/"+Date.now()+"_"+photoFile.name);
+
 await uploadBytes(storageRef,photoFile);
+
 photoURL = await getDownloadURL(storageRef);
 }
 
@@ -135,12 +140,7 @@ status:"Available",
 photo:photoURL
 });
 
-alert("Room Added Successfully");
-
-document.getElementById("roomNumber").value="";
-document.getElementById("roomType").value="";
-document.getElementById("roomPrice").value="";
-document.getElementById("roomPhoto").value="";
+alert("Room Added");
 
 loadRooms();
 loadDashboardData();
@@ -154,6 +154,7 @@ LOAD ROOMS
 async function loadRooms(){
 
 const snapshot = await getDocs(collection(db,"rooms"));
+
 const roomList = document.getElementById("roomList");
 
 if(!roomList) return;
@@ -166,16 +167,45 @@ const data = docSnap.data();
 
 roomList.innerHTML += `
 <div class="room-card">
-<img src="${data.photo || 'https://via.placeholder.com/250x150'}">
+
+<img src="${data.photo || 'https://via.placeholder.com/250'}">
+
 <h3>Room ${data.number}</h3>
 <p>Type: ${data.type}</p>
 <p>Price: $${data.price}</p>
-<p class="room-status">${data.status}</p>
-<button onclick="deleteRoom('${docSnap.id}')">Delete</button>
+
+<p class="room-status">
+Status: ${data.status}
+</p>
+
+<select onchange="changeStatus('${docSnap.id}',this.value)">
+<option ${data.status==="Available"?"selected":""}>Available</option>
+<option ${data.status==="Booked"?"selected":""}>Booked</option>
+<option ${data.status==="Maintenance"?"selected":""}>Maintenance</option>
+</select>
+
+<button onclick="deleteRoom('${docSnap.id}')">
+Delete
+</button>
+
 </div>
 `;
 
 });
+
+}
+
+/* =============================
+CHANGE ROOM STATUS
+============================= */
+
+window.changeStatus = async function(id,status){
+
+await updateDoc(doc(db,"rooms",id),{
+status:status
+});
+
+loadRooms();
 
 }
 
@@ -185,7 +215,7 @@ DELETE ROOM
 
 window.deleteRoom = async function(id){
 
-if(confirm("Delete this room?")){
+if(confirm("Delete room?")){
 await deleteDoc(doc(db,"rooms",id));
 loadRooms();
 loadDashboardData();

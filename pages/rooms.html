@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Room Management</title>
+
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>🏨 Room Management</h2>
+
+<div class="card">
+
+<input type="text" id="roomName" placeholder="Room Name"><br>
+
+<input type="number" id="roomPrice" placeholder="Price"><br>
+
+<input type="file" id="roomPhoto"><br>
+
+<select id="roomAvailability">
+<option value="true">Available</option>
+<option value="false">Not Available</option>
+</select>
+
+<br>
+
+<button onclick="addRoom()">➕ Add Room</button>
+
+</div>
+
+<hr>
+
+<div id="roomList"></div>
+
+</div>
+
+<script type="module" src="../js/rooms.js"></script>
+
+</body>
+</html>

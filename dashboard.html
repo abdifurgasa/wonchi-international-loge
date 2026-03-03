@@ -80,12 +80,28 @@
 
 <!-- ================= BOOKING PAGE ================= -->
 <div class="page" id="booking">
+
 <div class="card">
-<h2>Booking Panel</h2>
-<p>Booking system will be added in next step.</p>
-</div>
+
+<h2>Room Booking</h2>
+
+<input type="text" id="guestName" placeholder="Guest Name">
+
+<select id="bookingRoom"></select>
+
+<input type="date" id="checkIn">
+<input type="date" id="checkOut">
+
+<button onclick="createBooking()">Create Booking</button>
+
 </div>
 
+<div class="card">
+<h2>Booking List</h2>
+<div id="bookingList"></div>
+</div>
+
+</div>
 </div>
 </div>
 

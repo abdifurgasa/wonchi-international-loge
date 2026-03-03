@@ -25,11 +25,11 @@ getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 /* =============================
-FIREBASE CONFIG
+CONFIG
 ============================= */
 
 const firebaseConfig = {
-apiKey: "AIzaSyDqB7Ig1rso8OEBIL6ad3OtciFqHIk9TdE",
+apiKey: "AIzaSyDqD...",
 authDomain: "wanci-international-loge-43dd3.firebaseapp.com",
 projectId: "wanci-international-loge-43dd3",
 storageBucket: "wanci-international-loge-43dd3.appspot.com",
@@ -38,6 +38,7 @@ appId: "1:441258681939:web:961697760d09b7234688a6"
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -71,7 +72,7 @@ welcome.innerText =
 "Welcome "+data.name+" ("+data.role+")";
 }
 
-/* Worker Security Layer */
+/* Worker Security */
 
 if(data.role === "worker"){
 
@@ -138,17 +139,12 @@ Smart:2500,
 VIP:5000
 };
 
-/* =============================
-AUTO PRICE
-============================= */
+window.setAutoPrice=function(){
 
-window.setAutoPrice = function(){
+const type=document.getElementById("roomType").value;
 
-const type =
-document.getElementById("roomType").value;
-
-document.getElementById("roomPrice").value =
-ROOM_PRICES[type] || "";
+document.getElementById("roomPrice").value=
+ROOM_PRICES[type]||"";
 
 }
 
@@ -156,21 +152,14 @@ ROOM_PRICES[type] || "";
 ADD ROOM
 ============================= */
 
-window.addRoom = async function(){
+window.addRoom=async function(){
 
-const number =
-document.getElementById("roomNumber").value;
+const number=document.getElementById("roomNumber").value;
+const type=document.getElementById("roomType").value;
+const price=document.getElementById("roomPrice").value;
+const photoFile=document.getElementById("roomPhoto").files[0];
 
-const type =
-document.getElementById("roomType").value;
-
-const price =
-document.getElementById("roomPrice").value;
-
-const photoFile =
-document.getElementById("roomPhoto").files[0];
-
-if(!number || !type || !price){
+if(!number||!type||!price){
 alert("Fill all fields");
 return;
 }
@@ -179,12 +168,12 @@ let photoURL="";
 
 if(photoFile){
 
-const storageRef =
+const storageRef=
 ref(storage,"rooms/"+Date.now()+"_"+photoFile.name);
 
 await uploadBytes(storageRef,photoFile);
 
-photoURL =
+photoURL=
 await getDownloadURL(storageRef);
 }
 
@@ -196,10 +185,10 @@ photo:photoURL,
 status:"Available"
 });
 
-alert("Room Added");
-
 loadRooms();
 loadDashboardData();
+
+alert("Room Added");
 
 }
 
@@ -207,33 +196,24 @@ loadDashboardData();
 BOOKING SYSTEM
 ============================= */
 
-window.createBooking = async function(){
+window.createBooking=async function(){
 
-const guest =
-document.getElementById("guestName").value;
+const guest=document.getElementById("guestName").value;
+const roomId=document.getElementById("bookingRoom").value;
+const checkIn=document.getElementById("checkIn").value;
+const checkOut=document.getElementById("checkOut").value;
 
-const roomId =
-document.getElementById("bookingRoom").value;
-
-const checkIn =
-document.getElementById("checkIn").value;
-
-const checkOut =
-document.getElementById("checkOut").value;
-
-if(!guest || !roomId){
+if(!guest||!roomId){
 alert("Fill booking data");
 return;
 }
 
-const roomSnap =
+const roomSnap=
 await getDoc(doc(db,"rooms",roomId));
 
-const price =
-parseFloat(roomSnap.data().price);
+const price=parseFloat(roomSnap.data().price);
 
-const days =
-Math.max(
+const days=Math.max(
 1,
 Math.ceil(
 (new Date(checkOut)-new Date(checkIn))
@@ -241,8 +221,7 @@ Math.ceil(
 )
 );
 
-const totalBill =
-days * price;
+const totalBill=days*price;
 
 await addDoc(collection(db,"bookings"),{
 guest,
@@ -258,10 +237,10 @@ await updateDoc(doc(db,"rooms",roomId),{
 status:"Booked"
 });
 
-alert("Booking Created\nTotal Bill: $"+totalBill);
-
 loadRooms();
 loadBookingList();
+
+alert("Booking Created\nTotal Bill: $"+totalBill);
 
 }
 
@@ -269,9 +248,9 @@ loadBookingList();
 INVOICE GENERATOR
 ============================= */
 
-window.generateInvoice = async function(bookingId){
+window.generateInvoice=async function(bookingId){
 
-const snap =
+const snap=
 await getDoc(doc(db,"bookings",bookingId));
 
 if(!snap.exists()){
@@ -279,21 +258,18 @@ alert("Booking not found");
 return;
 }
 
-const data = snap.data();
+const data=snap.data();
 
 if(!window.jspdf){
 alert("Invoice library missing");
 return;
 }
 
-const { jsPDF } = window.jspdf;
+const { jsPDF }=window.jspdf;
 
-const pdf = new jsPDF();
+const pdf=new jsPDF();
 
-pdf.setFontSize(16);
 pdf.text("Hotel Invoice",20,20);
-
-pdf.setFontSize(12);
 
 pdf.text("Guest: "+data.guest,20,40);
 pdf.text("CheckIn: "+data.checkIn,20,50);
@@ -306,70 +282,11 @@ pdf.save("invoice.pdf");
 }
 
 /* =============================
-REVENUE CHART
-============================= */
-
-async function loadRevenueChart(){
-
-const snapshot =
-await getDocs(collection(db,"bookings"));
-
-let totalRevenue = 0;
-
-snapshot.forEach(docSnap=>{
-totalRevenue += docSnap.data().totalBill || 0;
-});
-
-const ctx =
-document.getElementById("revenueChart");
-
-if(!ctx) return;
-
-new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Revenue"],
-datasets:[{
-label:"Total Revenue",
-data:[totalRevenue]
-}]
-}
-});
-
-}
-
-/* =============================
-UI CONTROL
-============================= */
-
-window.toggleMenu = function(){
-
-document.getElementById("sidebar")
-.classList.toggle("collapsed");
-
-document.querySelector(".main")
-.classList.toggle("collapsed");
-
-}
-
-window.showPage = function(pageId){
-
-document.querySelectorAll(".page")
-.forEach(page=>{
-page.classList.remove("active");
-});
-
-document.getElementById(pageId)
-.classList.add("active");
-
-}
-
-/* =============================
 LOGOUT
 ============================= */
 
-window.logout = function(){
+window.logout=function(){
 signOut(auth).then(()=>{
 window.location.href="index.html";
 });
-         }
+}

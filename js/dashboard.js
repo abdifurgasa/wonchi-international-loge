@@ -46,11 +46,16 @@ const storage = getStorage(app);
 /* =============================
 AUTH CHECK
 ============================= */
+let authReady = false;
 
 onAuthStateChanged(auth, async user=>{
 
+if(!authReady){
+authReady = true;
+return;
+}
+
 if(!user){
-window.location.href="index.html";
 return;
 }
 
@@ -59,6 +64,7 @@ await getDoc(doc(db,"users",user.email));
 
 if(!snap.exists()){
 alert("Role not assigned");
+window.location.href="index.html";
 return;
 }
 
@@ -72,24 +78,10 @@ welcome.innerText =
 "Welcome "+data.name+" ("+data.role+")";
 }
 
-/* Worker Security */
-
-if(data.role === "worker"){
-
-const adminMenu =
-document.getElementById("adminPanelMenu");
-
-if(adminMenu){
-adminMenu.remove();
-}
-
-}
-
 loadDashboardData();
 loadRooms();
 loadRoomOptions();
 loadBookingList();
-loadRevenueChart();
 
 });
 

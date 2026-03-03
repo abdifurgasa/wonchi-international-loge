@@ -1,19 +1,35 @@
-import { auth } from "./firebase.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import { signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.login = function(){
+export function ultraAuth(app){
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const auth=getAuth(app);
+const db=getFirestore(app);
 
-signInWithEmailAndPassword(auth, email, password)
-.then(()=>{
-    window.location.href="dashboard.html";
-})
-.catch((error)=>{
-    alert(error.message);
+onAuthStateChanged(auth,async user=>{
+
+if(!user){
+window.location.href="index.html";
+return;
+}
+
+const snap=
+await getDoc(doc(db,"users",user.email));
+
+if(!snap.exists()){
+alert("Role not assigned");
+window.location.href="index.html";
+return;
+}
+
+const data=snap.data();
+
+document.getElementById("welcomeText").innerText=
+"Welcome "+data.name+" ("+data.role+")";
+
 });
 
-};
+}

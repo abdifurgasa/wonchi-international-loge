@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Restaurant Management</title>
 
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+
+<div class="main">
+
+<h2>🍔 Restaurant Enterprise Module</h2>
+
+<div class="card">
+
+<input type="text" id="foodName" placeholder="Food Name"><br>
+
+<input type="number" id="foodPrice" placeholder="Price"><br>
+
+<input type="text" id="foodCategory" placeholder="Category"><br>
+
+<input type="file" id="foodPhoto"><br>
+
+<button onclick="addFood()">➕ Add Food</button>
+
+</div>
+
+<hr>
+
+<div id="foodList"></div>
+
+</div>
+
+<script type="module" src="../js/food.js"></script>
+
+</body>
+</html>

@@ -1,106 +1,84 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* Sidebar Toggle */
-window.toggleSidebar = function(){
-document.getElementById("sidebar").classList.toggle("collapsed");
-}
+import { doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* Logout */
-window.logout = function(){
-signOut(auth);
-window.location.href="index.html";
-}
+/* ===============================
+   AUTH CHECK + ROLE LOAD
+================================ */
 
-/* Authentication + Role Menu Loader */
-onAuthStateChanged(auth, async(user)=>{
+onAuthStateChanged(auth, async (user) => {
 
-if(!user){
-window.location.href="index.html";
-return;
-}
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
 
-const snap = await getDoc(doc(db,"users",user.uid));
+    try {
 
-if(snap.exists()){
+        const snap = await getDoc(doc(db, "users", user.uid));
 
-const data = snap.data();
+        if (snap.exists()) {
 
-document.getElementById("userInfo").innerText =
-data.name + " (" + data.role + ")";
+            const data = snap.data();
+            console.log("Logged in as:", data.name, data.role);
 
-/* Load Menu Based on Role */
-loadMenu(data.role);
+            loadMenu(data.role);
+        }
 
-}
+    } catch (error) {
+        console.error("Error loading user:", error);
+    }
 });
 
-/* Enterprise Role Menu Engine */
-function loadMenu(role){
+/* ===============================
+   LOGOUT
+================================ */
 
-let menu=document.getElementById("menuList");
-
-let menus=[];
-
-/* Admin Full Access */
-if(role==="admin"){
-menus=[
-"📊 Dashboard",
-"🏨 Rooms",
-"🍔 Foods",
-"🍹 Drinks",
-"👥 Staff",
-"💰 Finance"
-];
-}
-
-/* Manager */
-else if(role==="manager"){
-menus=[
-"📊 Dashboard",
-"🏨 Rooms",
-"🍔 Foods",
-"🍹 Drinks",
-"💰 Finance"
-];
-}
-
-/* Receptionist */
-else if(role==="receptionist"){
-menus=[
-"📊 Dashboard",
-"🏨 Booking",
-"💰 Finance"
-];
-}
-
-/* Worker */
-else if(role==="worker"){
-menus=[
-"📊 Dashboard",
-"🍔 Order Food",
-"🍹 Order Drink"
-];
-}
-
-/* Barman */
-else if(role==="barman"){
-menus=["📊 Dashboard","🍹 Drink Queue"];
-}
-
-/* Kitchen */
-else if(role==="kitchen"){
-menus=["📊 Dashboard","🍔 Food Queue"];
-}
-
-menu.innerHTML="";
-
-menus.forEach(m=>{
-let a=document.createElement("a");
-a.href="#";
-a.innerText=m;
-menu.appendChild(a);
+document.getElementById("logoutBtn")
+.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
 });
 
+/* ===============================
+   ROLE BASED MENU SYSTEM
+================================ */
+
+function loadMenu(role) {
+
+    const menu = document.querySelector(".sidebar ul");
+
+    let menus = [];
+
+    if (role === "admin") {
+        menus = ["🏠 Dashboard", "🛏 Rooms", "📅 Booking", "🍽 Food", "🍹 Drink", "💰 Finance"];
+    }
+    else if (role === "manager") {
+        menus = ["🏠 Dashboard", "🛏 Rooms", "📅 Booking", "🍽 Food", "🍹 Drink"];
+    }
+    else if (role === "receptionist") {
+        menus = ["🏠 Dashboard", "📅 Booking"];
+    }
+    else if (role === "worker") {
+        menus = ["🏠 Dashboard", "🍽 Food"];
+    }
+    else if (role === "barman") {
+        menus = ["🏠 Dashboard", "🍹 Drink"];
+    }
+    else if (role === "kitchen") {
+        menus = ["🏠 Dashboard", "🍽 Food"];
+    }
+
+    menu.innerHTML = "";
+
+    menus.forEach(text => {
+
+        const li = document.createElement("li");
+        li.innerText = text;
+
+        menu.appendChild(li);
+    });
 }

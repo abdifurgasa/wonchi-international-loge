@@ -1,32 +1,25 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+    <title>Lodge Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
 
-<title>Lodge Dashboard</title>
-
-<link rel="stylesheet" href="css/dashboard.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
 
 <div class="sidebar">
-
-<h2>Wanci Lodge</h2>
-
-<ul>
-<li onclick="showPage('home')">🏠 Dashboard</li>
-<li onclick="showPage('rooms')">🛏 Rooms</li>
-<li onclick="showPage('booking')">📅 Booking</li>
-<li onclick="showPage('restaurant')">🍽 Food</li>
-<li onclick="showPage('drinks')">🍹 Drink</li>
-<li onclick="logout()">🚪 Logout</li>
-</ul>
-
+    <h2>Wanci Lodge</h2>
+    <ul>
+        <li data-page="home">🏠 Dashboard</li>
+        <li data-page="rooms">🛏 Rooms</li>
+        <li data-page="booking">📅 Booking</li>
+        <li data-page="restaurant">🍽 Food</li>
+        <li data-page="drinks">🍹 Drink</li>
+        <li id="logoutBtn">🚪 Logout</li>
+    </ul>
 </div>
 
 <div class="main">
@@ -34,43 +27,39 @@
 <div class="content">
 
 <div class="page active" id="home">
-<h2>Dashboard</h2>
-<h1 id="totalRooms">0</h1>
-<canvas id="revenueChart"></canvas>
+    <h2>Dashboard</h2>
+    <h1 id="totalRooms">0</h1>
+    <canvas id="revenueChart"></canvas>
 </div>
 
 <div class="page" id="rooms">
-<input id="roomNumber" placeholder="Room Number">
-<select id="roomType">
-<option>Single</option>
-<option>Double</option>
-<option>Deluxe</option>
-<option>VIP</option>
-</select>
+    <input id="roomNumber" placeholder="Room Number">
+    
+    <select id="roomType">
+        <option>Single</option>
+        <option>Double</option>
+        <option>Deluxe</option>
+        <option>VIP</option>
+    </select>
 
-<input id="roomPrice" placeholder="Price">
+    <input id="roomPrice" placeholder="Price">
+    <button id="addRoomBtn">Add Room</button>
 
-<button onclick="addRoom()">Add Room</button>
-
-<div id="roomList"></div>
+    <div id="roomList"></div>
 </div>
 
 <div class="page" id="booking">
+    <input id="guestName" placeholder="Guest Name">
+    <select id="bookingRoom"></select>
+    <input type="date" id="checkIn">
+    <input type="date" id="checkOut">
+    <button id="createBookingBtn">Create Booking</button>
 
-<input id="guestName" placeholder="Guest Name">
-
-<select id="bookingRoom"></select>
-
-<input type="date" id="checkIn">
-<input type="date" id="checkOut">
-
-<button onclick="createBooking()">Create Booking</button>
-
-<div id="bookingList"></div>
-
+    <div id="bookingList"></div>
 </div>
 
 </div>
+
 <div style="position:relative;display:inline-block;">
 🔔 Notifications
 <span id="notifyBadge"
@@ -82,13 +71,13 @@ padding:3px 7px;
 font-size:12px;
 position:absolute;
 top:-10px;
-right:-10px;
-">
+right:-10px;">
 0
 </span>
 </div>
 
 <div id="notificationList"></div>
+
 </div>
 
 <script type="module" src="js/dashboard.js"></script>

@@ -17,67 +17,63 @@ Auto Redirect If Logged In
 
 onAuthStateChanged(auth, async (user) => {
 
-```
-if (user) {
+    if (user) {
 
-    try {
+        try {
 
-        const snap = await getDoc(doc(db, "users", user.uid));
+            const snap = await getDoc(doc(db, "users", user.uid));
 
-        if (snap.exists()) {
-            window.location.href = "dashboard.html";
+            if (snap.exists()) {
+                window.location.href = "dashboard.html";
+            }
+
+        } catch (e) {
+            console.error(e);
         }
 
-    } catch (e) {
-        console.error(e);
     }
-
-}
-```
 
 });
 
 /* =============================
-Login Function ⭐ IMPORTANT
+Login Function ⭐
 ============================= */
 
 window.login = async function(){
 
-```
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-let errorBox = document.getElementById("error");
+    let errorBox = document.getElementById("error");
 
-if(!email || !password){
-    errorBox.innerText="Enter email and password";
-    return;
-}
-
-try{
-
-    const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-    );
-
-    const user = userCredential.user;
-
-    const snap = await getDoc(doc(db,"users",user.uid));
-
-    if(snap.exists()){
-        window.location.href="dashboard.html";
-    }
-    else{
-        errorBox.innerText="User profile not found";
-        signOut(auth);
+    if(!email || !password){
+        errorBox.innerText="Enter email and password";
+        return;
     }
 
-}catch(err){
-    errorBox.innerText="Login failed";
-    console.error(err);
-}
-```
+    try{
+
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        const user = userCredential.user;
+
+        const snap = await getDoc(doc(db,"users",user.uid));
+
+        if(snap.exists()){
+            window.location.href="dashboard.html";
+        }
+        else{
+            errorBox.innerText="User profile not found";
+            signOut(auth);
+        }
+
+    }catch(err){
+        errorBox.innerText="Login failed";
+        console.error(err);
+    }
 
 };

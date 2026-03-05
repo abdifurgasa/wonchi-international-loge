@@ -4,76 +4,82 @@ import {
 signInWithEmailAndPassword,
 onAuthStateChanged,
 signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 doc,
 getDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* =============================
-Auto Redirect If Logged In
-============================= */
+/* ===============================
+Auto Login Redirect
+================================ */
 
 onAuthStateChanged(auth, async (user) => {
 
-    if (user) {
+if(user){
 
-        try {
+try{
 
-            const snap = await getDoc(doc(db, "users", user.uid));
+const snap = await getDoc(doc(db,"users",user.uid));
 
-            if (snap.exists()) {
-                window.location.href = "dashboard.html";
-            }
+if(snap.exists()){
+window.location.href="dashboard.html";
+}
 
-        } catch (e) {
-            console.error(e);
-        }
+}catch(error){
+console.error(error);
+}
 
-    }
+}
 
 });
 
-/* =============================
-Login Function ⭐
-============================= */
+/* ===============================
+LOGIN FUNCTION
+================================ */
 
 window.login = async function(){
 
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+const errorBox = document.getElementById("error");
 
-    let errorBox = document.getElementById("error");
+if(!email || !password){
+errorBox.innerText="Enter email and password";
+return;
+}
 
-    if(!email || !password){
-        errorBox.innerText="Enter email and password";
-        return;
-    }
+try{
 
-    try{
+const userCredential = await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
 
-        const userCredential = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+const user = userCredential.user;
 
-        const user = userCredential.user;
+/* Check Firestore user */
 
-        const snap = await getDoc(doc(db,"users",user.uid));
+const snap = await getDoc(doc(db,"users",user.uid));
 
-        if(snap.exists()){
-            window.location.href="dashboard.html";
-        }
-        else{
-            errorBox.innerText="User profile not found";
-            signOut(auth);
-        }
+if(snap.exists()){
 
-    }catch(err){
-        errorBox.innerText="Login failed";
-        console.error(err);
-    }
+window.location.href="dashboard.html";
+
+}else{
+
+errorBox.innerText="User profile not found";
+signOut(auth);
+
+}
+
+}catch(error){
+
+errorBox.innerText="Login failed";
+console.error(error);
+
+}
 
 };

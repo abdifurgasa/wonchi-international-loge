@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -9,136 +11,202 @@
 
 <link rel="stylesheet" href="css/dashboard.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+height:100vh;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:230px;
+background:#1e2a38;
+color:white;
+padding-top:20px;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.sidebar a{
+display:block;
+color:white;
+padding:12px 20px;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#2c7be5;
+}
+
+/* Main */
+
+.main{
+flex:1;
+background:#f4f6f9;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 3px 10px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+.card h3{
+margin:10px 0;
+}
+
+.language{
+margin-right:10px;
+}
+
+.logout{
+background:red;
+color:white;
+border:none;
+padding:8px 12px;
+cursor:pointer;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 
 <div class="sidebar">
 
-<h2>Wonchi Lodge</h2>
+<h2 data-lang="hotel_name">Wonchi International Lodge</h2>
 
-<ul>
-<li data-page="home">🏠 Dashboard</li>
-<li data-page="rooms">🛏 Rooms</li>
-<li data-page="booking">📅 Booking</li>
-<li data-page="restaurant">🍽 Food</li>
-<li data-page="drinks">🍹 Drinks</li>
-<li id="logoutBtn">🚪 Logout</li>
-</ul>
+<a href="dashboard.html" data-lang="dashboard">Dashboard</a>
+
+<a href="pages/rooms.html" data-lang="rooms">Rooms</a>
+
+<a href="pages/booking.html" data-lang="booking">Booking</a>
+
+<a href="pages/restaurant.html" data-lang="restaurant">Restaurant</a>
+
+<a href="pages/drinks.html" data-lang="drinks">Drinks</a>
+
+<a href="pages/finance.html" data-lang="finance">Finance</a>
+
+<a href="pages/booking_calender.html" data-lang="calendar">Booking Calendar</a>
+
+<a href="pages/kitchen_queue.html" data-lang="kitchen">Kitchen Queue</a>
+
+<a href="pages/notification_admin.html" data-lang="notification">Notifications</a>
+
+<a href="pages/approval_request.html" data-lang="approval">Approval Requests</a>
 
 </div>
 
-
-<!-- MAIN AREA -->
+<!-- Main -->
 
 <div class="main">
 
-<!-- HEADER -->
+<div class="header">
 
-<div class="topbar">
+<h1 data-lang="dashboard">Dashboard</h1>
 
-<div class="notification">
+<div>
 
-🔔 Notifications
-
-<span id="notifyBadge">
-0
-</span>
-
-</div>
-
-</div>
-
-
-<!-- CONTENT -->
-
-<div class="content">
-
-
-<!-- DASHBOARD PAGE -->
-
-<div class="page active" id="home">
-
-<h2>Dashboard</h2>
-
-<div class="dashboard-cards">
-
-<div class="card">
-<h3>Total Rooms</h3>
-<h1 id="totalRooms">0</h1>
-</div>
-
-</div>
-
-<canvas id="revenueChart"></canvas>
-
-</div>
-
-
-
-<!-- ROOMS PAGE -->
-
-<div class="page" id="rooms">
-
-<h2>Room Management</h2>
-
-<input id="roomNumber" placeholder="Room Number">
-
-<select id="roomType">
-<option>Single</option>
-<option>Double</option>
-<option>Deluxe</option>
-<option>VIP</option>
+<select class="language" onchange="changeLanguage(this.value)">
+<option value="English">English</option>
+<option value="amharic">አማርኛ</option>
+<option value="afan-oromo">Afan Oromo</option>
 </select>
 
-<input id="roomPrice" placeholder="Price">
-
-<button id="addRoomBtn">Add Room</button>
-
-<div id="roomList"></div>
+<button class="logout" onclick="logout()">Logout</button>
 
 </div>
 
+</div>
 
+<!-- Dashboard Cards -->
 
-<!-- BOOKING PAGE -->
+<div class="cards">
 
-<div class="page" id="booking">
+<div class="card">
+<h3 data-lang="rooms">Rooms</h3>
+<p>Manage hotel rooms</p>
+</div>
 
-<h2>Booking</h2>
+<div class="card">
+<h3 data-lang="booking">Bookings</h3>
+<p>Guest reservations</p>
+</div>
 
-<input id="guestName" placeholder="Guest Name">
+<div class="card">
+<h3 data-lang="restaurant">Restaurant</h3>
+<p>Food orders</p>
+</div>
 
-<select id="bookingRoom"></select>
-
-<input type="date" id="checkIn">
-
-<input type="date" id="checkOut">
-
-<button id="createBookingBtn">Create Booking</button>
-
-<div id="bookingList"></div>
+<div class="card">
+<h3 data-lang="finance">Finance</h3>
+<p>Revenue & reports</p>
+</div>
 
 </div>
 
-
-
-<!-- NOTIFICATIONS -->
-
-<div id="notificationList"></div>
-
-
-</div>
 </div>
 
+<script>
+
+// Language system
+
+async function changeLanguage(lang){
+
+let file="";
+
+if(lang==="English") file="language/English/en.json";
+if(lang==="amharic") file="language/amharic/am.json";
+if(lang==="afan-oromo") file="language/afan-oromo/or.json";
+
+let response=await fetch(file);
+let data=await response.json();
+
+document.querySelectorAll("[data-lang]").forEach(el=>{
+el.innerText=data[el.dataset.lang];
+});
+
+localStorage.setItem("language",lang);
+
+}
+
+window.onload=function(){
+
+let savedLang=localStorage.getItem("language") || "English";
+changeLanguage(savedLang);
+
+}
+
+</script>
 
 <script type="module" src="js/dashboard.js"></script>
 
 </body>
-
 </html>

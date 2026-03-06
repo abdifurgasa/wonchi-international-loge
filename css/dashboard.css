@@ -145,3 +145,95 @@ gap:10px;
 }
 
 }
+/* =============================
+Ocean Blue Animated Dashboard Theme
+============================= */
+
+/* Main Dashboard Background */
+
+.main{
+flex:1;
+padding:25px;
+
+background: linear-gradient(
+135deg,
+#0f3d73,
+#1b75bc,
+#2fa4e7,
+#6dd5fa
+);
+
+background-size: 400% 400%;
+animation: oceanWave 18s ease infinite;
+
+color:white;
+}
+
+/* Sidebar Ocean Theme */
+
+.sidebar{
+width:230px;
+
+background: linear-gradient(
+180deg,
+#0b2d4f,
+#0f3d73
+);
+
+color:white;
+padding-top:20px;
+}
+
+/* Sidebar Menu Hover Effect */
+
+#sidebarMenu li a{
+color:white;
+}
+
+#sidebarMenu li:hover{
+background: rgba(255,255,255,0.12);
+transition:0.4s;
+}
+
+/* Glass Style Cards */
+
+.card{
+background: rgba(255,255,255,0.15);
+backdrop-filter: blur(12px);
+
+color:white;
+
+box-shadow:0 0 18px rgba(0,0,0,0.2);
+}
+
+/* Card Text */
+
+.card p{
+color:#e6f4ff;
+}
+
+/* Header Text */
+
+.header h1{
+color:white;
+}
+
+/* Logout Button Style */
+
+#logoutBtn{
+background:#ff4d4d;
+}
+
+/* Ocean Wave Animation */
+
+@keyframes oceanWave{
+0%{
+background-position:0% 50%;
+}
+50%{
+background-position:100% 50%;
+}
+100%{
+background-position:0% 50%;
+}
+}

@@ -9,8 +9,6 @@
 
 <title>Wonchi International Lodge - Login</title>
 
-<link rel="stylesheet" href="css/style.css">
-
 <style>
 
 body{
@@ -30,7 +28,7 @@ right:20px;
 }
 
 .language-switch select{
-padding:5px;
+padding:6px;
 }
 
 .login-container{
@@ -42,12 +40,12 @@ box-shadow:0 8px 20px rgba(0,0,0,0.3);
 text-align:center;
 }
 
-.login-container h1{
+h1{
 margin-bottom:5px;
 font-size:22px;
 }
 
-.login-container p{
+p{
 margin-bottom:20px;
 color:gray;
 }
@@ -80,6 +78,7 @@ border:none;
 border-radius:6px;
 color:white;
 font-size:16px;
+border-radius:6px;
 cursor:pointer;
 }
 
@@ -115,7 +114,7 @@ color:gray;
 
 <p data-lang="system_title">Hotel Management System</p>
 
-<input 
+<input
 type="email"
 id="email"
 placeholder="Enter Email"
@@ -123,7 +122,7 @@ data-lang-placeholder="email">
 
 <div class="password-box">
 
-<input 
+<input
 type="password"
 id="password"
 placeholder="Enter Password"
@@ -143,19 +142,21 @@ data-lang-placeholder="password">
 
 <script>
 
+/* Password Toggle */
+
 function togglePassword(){
 
 let pass=document.getElementById("password");
 
-if(pass.type==="password"){
-pass.type="text";
-}else{
-pass.type="password";
-}
+pass.type = pass.type==="password" ? "text" : "password";
 
 }
+
+/* Language System */
 
 async function changeLanguage(lang){
+
+try{
 
 let file="";
 
@@ -176,6 +177,10 @@ el.placeholder=data[el.dataset.langPlaceholder];
 
 localStorage.setItem("language",lang);
 
+}catch(e){
+console.warn("Language load error");
+}
+
 }
 
 window.onload=function(){
@@ -191,4 +196,3 @@ changeLanguage(savedLang);
 
 </body>
 </html>
-

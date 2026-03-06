@@ -1,1 +1,18 @@
+{
+"hotel_name":"Wonchi International Lodge",
+"system_title":"Hotel Management System",
+"email":"Enter Email",
+"password":"Enter Password",
+"login":"Login",
+"dashboard":"Dashboard",
+"rooms":"Rooms",
+"booking":"Booking",
+"restaurant":"Restaurant",
+"drinks":"Drinks",
+"finance":"Finance",
+"calendar":"Booking Calendar",
+"kitchen":"Kitchen Queue",
+"notification":"Notifications",
+"approval":"Approval Requests"
+}
 

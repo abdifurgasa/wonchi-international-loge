@@ -1,117 +1,194 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<title>Wonchi International Loge Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wonchi International Lodge - Login</title>
 
 <link rel="stylesheet" href="css/style.css">
 
 <style>
+
 body{
-    margin:0;
-    font-family:Arial;
-    background:url("images/login-bg.jpg") center/cover;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:url("images/login-bg.jpg") center/cover no-repeat;
 }
 
-.login-box{
-    background:white;
-    padding:35px;
-    width:320px;
-    border-radius:20px;
-    box-shadow:0 0 25px rgba(0,0,0,.2);
-    animation:fadeIn 1s;
+.language-switch{
+position:absolute;
+top:20px;
+right:20px;
 }
 
-h2{
-    text-align:center;
+.language-switch select{
+padding:5px;
 }
 
-input, select{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:10px;
-    border:1px solid #ccc;
+.login-container{
+background:white;
+padding:40px;
+width:340px;
+border-radius:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+text-align:center;
 }
 
-input:focus{
-    border-color:#0b6efd;
-    outline:none;
+.login-container h1{
+margin-bottom:5px;
+font-size:22px;
+}
+
+.login-container p{
+margin-bottom:20px;
+color:gray;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+.password-box{
+position:relative;
+}
+
+.password-box span{
+position:absolute;
+right:10px;
+top:12px;
+cursor:pointer;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    border:none;
-    background:#0b6efd;
-    color:white;
-    border-radius:10px;
-    font-size:16px;
-    cursor:pointer;
+width:100%;
+padding:12px;
+background:#2c7be5;
+border:none;
+border-radius:6px;
+color:white;
+font-size:16px;
+cursor:pointer;
 }
 
 button:hover{
-    background:#084bb5;
+background:#1a5ed8;
 }
 
-.eye{
-    float:right;
-    margin-top:-38px;
-    margin-right:10px;
-    cursor:pointer;
+.footer{
+margin-top:15px;
+font-size:12px;
+color:gray;
 }
 
-@keyframes fadeIn{
-    from{
-        opacity:0;
-        transform:translateY(40px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
 </style>
 
 </head>
 
 <body>
 
-<div class="login-box">
+<div class="language-switch">
 
-<h2>🏨 Wonchi International Loge</h2>
-
-<select>
-<option>English</option>
-<option>Amharic</option>
-<option>Afaan Oromo</option>
+<select onchange="changeLanguage(this.value)">
+<option value="English">English</option>
+<option value="amharic">አማርኛ</option>
+<option value="afan-oromo">Afan Oromo</option>
 </select>
-
-<input type="email" id="email" placeholder="Email">
-
-<input type="password" id="password" placeholder="Password">
-<span class="eye" onclick="togglePassword()">👁️</span>
-
-<button id="loginBtn">Login</button>
-
-<p id="error" style="color:red;text-align:center"></p>
 
 </div>
 
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/auth.js"></script>
+<div class="login-container">
+
+<h1 data-lang="hotel_name">Wonchi International Lodge</h1>
+
+<p data-lang="system_title">Hotel Management System</p>
+
+<input 
+type="email"
+id="email"
+placeholder="Enter Email"
+data-lang-placeholder="email">
+
+<div class="password-box">
+
+<input 
+type="password"
+id="password"
+placeholder="Enter Password"
+data-lang-placeholder="password">
+
+<span onclick="togglePassword()">👁️</span>
+
+</div>
+
+<button onclick="loginUser()" data-lang="login">Login</button>
+
+<div class="footer">
+© 2026 Wonchi International Lodge
+</div>
+
+</div>
 
 <script>
+
 function togglePassword(){
-let p=document.getElementById("password");
-p.type = p.type==="password" ? "text" : "password";
+
+let pass=document.getElementById("password");
+
+if(pass.type==="password"){
+pass.type="text";
+}else{
+pass.type="password";
 }
+
+}
+
+async function changeLanguage(lang){
+
+let file="";
+
+if(lang==="English") file="language/English/en.json";
+if(lang==="amharic") file="language/amharic/am.json";
+if(lang==="afan-oromo") file="language/afan-oromo/or.json";
+
+let response=await fetch(file);
+let data=await response.json();
+
+document.querySelectorAll("[data-lang]").forEach(el=>{
+el.innerText=data[el.dataset.lang];
+});
+
+document.querySelectorAll("[data-lang-placeholder]").forEach(el=>{
+el.placeholder=data[el.dataset.langPlaceholder];
+});
+
+localStorage.setItem("language",lang);
+
+}
+
+window.onload=function(){
+
+let savedLang=localStorage.getItem("language") || "English";
+changeLanguage(savedLang);
+
+}
+
 </script>
+
+<script type="module" src="js/auth.js"></script>
 
 </body>
 </html>
+

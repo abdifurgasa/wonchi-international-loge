@@ -1,1 +1,18 @@
+{
+"hotel_name":"ወንቺ ኢንተርናሽናል ሎጅ",
+"system_title":"የሆቴል አስተዳደር ስርዓት",
+"email":"ኢሜል አስገባ",
+"password":"የይለፍ ቃል",
+"login":"ግባ",
+"dashboard":"ዳሽቦርድ",
+"rooms":"ክፍሎች",
+"booking":"ቦታ ማስያዣ",
+"restaurant":"ሬስቶራንት",
+"drinks":"መጠጦች",
+"finance":"ፋይናንስ",
+"calendar":"ቀን መቁጠሪያ",
+"kitchen":"ኩሽና ወረፋ",
+"notification":"ማሳወቂያ",
+"approval":"ማፅደቅ ጥያቄ"
+}
 

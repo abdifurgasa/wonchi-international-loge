@@ -1,75 +1,110 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import { doc, getDoc } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    const sidebarMenu = document.querySelector(".sidebar ul");
+const logoutBtn = document.getElementById("logoutBtn");
+const sidebarMenu = document.getElementById("sidebarMenu");
 
-    /* ================= AUTH CHECK ================= */
+/* ================= AUTH CHECK ================= */
 
-    onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user) => {
 
-        if (!user) {
-            window.location.href = "index.html";
-            return;
-        }
+if (!user) {
+window.location.replace("index.html");
+return;
+}
 
-        try {
-            const snap = await getDoc(doc(db, "users", user.uid));
+try {
 
-            if (snap.exists()) {
-                const data = snap.data();
-                console.log("Logged in as:", data.role);
-                loadMenu(data.role);
-            }
+const snap = await getDoc(doc(db, "users", user.uid));
 
-        } catch (err) {
-            console.error("User load error:", err);
-        }
-    });
+let role = "guest";
 
-    /* ================= LOGOUT ================= */
+if (snap.exists()) {
+role = snap.data().role || "guest";
+}
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
-            await signOut(auth);
-            window.location.href = "index.html";
-        });
-    }
+console.log("Login Role:", role);
 
-    /* ================= ROLE MENU ================= */
+loadMenu(role);
 
-    function loadMenu(role) {
-
-        if (!sidebarMenu) return;
-
-        let menus = [];
-
-        if (role === "admin") {
-            menus = ["🏠 Dashboard", "🛏 Rooms", "📅 Booking", "🍽 Food", "🍹 Drink", "💰 Finance"];
-        }
-        else if (role === "manager") {
-            menus = ["🏠 Dashboard", "🛏 Rooms", "📅 Booking", "🍽 Food", "🍹 Drink"];
-        }
-        else if (role === "receptionist") {
-            menus = ["🏠 Dashboard", "📅 Booking"];
-        }
-        else {
-            menus = ["🏠 Dashboard"];
-        }
-
-        sidebarMenu.innerHTML = "";
-
-        menus.forEach(text => {
-            const li = document.createElement("li");
-            li.innerText = text;
-            sidebarMenu.appendChild(li);
-        });
-    }
+} catch (err) {
+console.error("Dashboard Load Error:", err);
+loadMenu("guest");
+}
 
 });
+
+/* ================= LOGOUT ================= */
+
+if (logoutBtn) {
+
+logoutBtn.addEventListener("click", async () => {
+
+await signOut(auth);
+
+window.location.replace("index.html");
+
+});
+
+}
+
+/* ================= ROLE MENU ================= */
+
+function loadMenu(role){
+
+if(!sidebarMenu) return;
+
+let menus = [];
+
+if(role === "admin"){
+menus = [
+{name:"Dashboard", link:"dashboard.html"},
+{name:"Rooms", link:"pages/rooms.html"},
+{name:"Booking", link:"pages/booking.html"},
+{name:"Food", link:"pages/restaurant.html"},
+{name:"Drink", link:"pages/drinks.html"},
+{name:"Finance", link:"pages/finance.html"}
+];
+}
+
+else if(role === "manager"){
+menus = [
+{name:"Dashboard", link:"dashboard.html"},
+{name:"Rooms", link:"pages/rooms.html"},
+{name:"Booking", link:"pages/booking.html"},
+{name:"Food", link:"pages/restaurant.html"}
+];
+}
+
+else if(role === "receptionist"){
+menus = [
+{name:"Dashboard", link:"dashboard.html"},
+{name:"Booking", link:"pages/booking.html"}
+];
+}
+
+else{
+menus = [{name:"Dashboard", link:"dashboard.html"}];
+}
+
+/* Render Menu */
+
+sidebarMenu.innerHTML = "";
+
+menus.forEach(menu=>{
+
+const li = document.createElement("li");
+
+li.innerHTML = `<a href="${menu.link}">${menu.name}</a>`;
+
+sidebarMenu.appendChild(li);
+
+});
+
+}
+
+});
+    

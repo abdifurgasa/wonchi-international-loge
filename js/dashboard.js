@@ -2,109 +2,122 @@ import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+/* ===============================
+Security Dashboard Guard
+=============================== */
 
-const logoutBtn = document.getElementById("logoutBtn");
 const sidebarMenu = document.getElementById("sidebarMenu");
+const logoutBtn = document.getElementById("logoutBtn");
 
-/* ================= AUTH CHECK ================= */
+/* ===============================
+Authentication Watcher
+=============================== */
 
 onAuthStateChanged(auth, async (user) => {
 
-if (!user) {
+if(!user){
 window.location.replace("index.html");
 return;
 }
 
-try {
+try{
 
-const snap = await getDoc(doc(db, "users", user.uid));
+const snap = await getDoc(doc(db,"users",user.uid));
 
 let role = "guest";
 
-if (snap.exists()) {
+if(snap.exists()){
 role = snap.data().role || "guest";
 }
 
-console.log("Login Role:", role);
+localStorage.setItem("userRole",role);
 
 loadMenu(role);
 
-} catch (err) {
-console.error("Dashboard Load Error:", err);
+}catch(error){
+
+console.error("Dashboard Auth Error:",error);
+
 loadMenu("guest");
+
 }
 
 });
 
-/* ================= LOGOUT ================= */
-
-if (logoutBtn) {
-
-logoutBtn.addEventListener("click", async () => {
-
-await signOut(auth);
-
-window.location.replace("index.html");
-
-});
-
-}
-
-/* ================= ROLE MENU ================= */
+/* ===============================
+Menu Loader Engine
+=============================== */
 
 function loadMenu(role){
 
 if(!sidebarMenu) return;
 
-let menus = [];
+let menus=[];
 
-if(role === "admin"){
-menus = [
-{name:"Dashboard", link:"dashboard.html"},
-{name:"Rooms", link:"pages/rooms.html"},
-{name:"Booking", link:"pages/booking.html"},
-{name:"Food", link:"pages/restaurant.html"},
-{name:"Drink", link:"pages/drinks.html"},
-{name:"Finance", link:"pages/finance.html"}
+if(role==="admin"){
+menus=[
+{name:"Dashboard",link:"dashboard.html"},
+{name:"Rooms",link:"pages/rooms.html"},
+{name:"Booking",link:"pages/booking.html"},
+{name:"Food",link:"pages/restaurant.html"},
+{name:"Drink",link:"pages/drinks.html"},
+{name:"Finance",link:"pages/finance.html"}
 ];
 }
 
-else if(role === "manager"){
-menus = [
-{name:"Dashboard", link:"dashboard.html"},
-{name:"Rooms", link:"pages/rooms.html"},
-{name:"Booking", link:"pages/booking.html"},
-{name:"Food", link:"pages/restaurant.html"}
+else if(role==="manager"){
+menus=[
+{name:"Dashboard",link:"dashboard.html"},
+{name:"Rooms",link:"pages/rooms.html"},
+{name:"Booking",link:"pages/booking.html"},
+{name:"Food",link:"pages/restaurant.html"}
 ];
 }
 
-else if(role === "receptionist"){
-menus = [
-{name:"Dashboard", link:"dashboard.html"},
-{name:"Booking", link:"pages/booking.html"}
+else if(role==="receptionist"){
+menus=[
+{name:"Dashboard",link:"dashboard.html"},
+{name:"Booking",link:"pages/booking.html"}
 ];
 }
 
 else{
-menus = [{name:"Dashboard", link:"dashboard.html"}];
+menus=[{name:"Dashboard",link:"dashboard.html"}];
 }
 
-/* Render Menu */
+/* Render Sidebar */
 
-sidebarMenu.innerHTML = "";
+sidebarMenu.innerHTML="";
 
 menus.forEach(menu=>{
+sidebarMenu.innerHTML+=`
 
-const li = document.createElement("li");
-
-li.innerHTML = `<a href="${menu.link}">${menu.name}</a>`;
-
-sidebarMenu.appendChild(li);
-
+<li><a href="${menu.link}">${menu.name}</a></li>
+`;
 });
 
 }
 
-});
-    
+/* ===============================
+Logout System
+=============================== */
+
+if(logoutBtn){
+
+logoutBtn.onclick = async ()=>{
+
+try{
+
+await signOut(auth);
+
+localStorage.clear();
+
+window.location.replace("index.html");
+
+}catch(error){
+console.error("Logout Error:",error);
+}
+
+};
+
+}

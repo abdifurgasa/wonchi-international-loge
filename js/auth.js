@@ -24,24 +24,16 @@ return;
 
 try{
 
-const userCredential = await signInWithEmailAndPassword(
-auth,
-email,
-password
-);
+const userCredential = await signInWithEmailAndPassword(auth,email,password);
 
 const user = userCredential.user;
 
 const snap = await getDoc(doc(db,"users",user.uid));
 
 if(snap.exists()){
-
 window.location.href="dashboard.html";
-
 }else{
-
 errorBox.innerText="User profile not found";
-
 }
 
 }catch(error){
@@ -52,4 +44,3 @@ console.error(error);
 }
 
 });
-window.login = login;

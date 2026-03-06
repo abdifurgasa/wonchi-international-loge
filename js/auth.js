@@ -1,46 +1,48 @@
-import { auth, db } from "./firebase.js";
+import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+/* =============================
+Login Function
+============================= */
 
-import {
-doc,
-getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+window.loginUser = async function(){
 
-const loginBtn = document.getElementById("loginBtn");
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
 
-loginBtn.addEventListener("click", async () => {
-
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-const errorBox = document.getElementById("error");
+/* Validation */
 
 if(!email || !password){
-errorBox.innerText="Enter email and password";
+alert("Please enter email and password");
 return;
 }
 
 try{
 
-const userCredential = await signInWithEmailAndPassword(auth,email,password);
+const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-const user = userCredential.user;
+// Save session
+localStorage.setItem("leloUser", JSON.stringify(userCredential.user));
 
-const snap = await getDoc(doc(db,"users",user.uid));
-
-if(snap.exists()){
-window.location.href="dashboard.html";
-}else{
-errorBox.innerText="User profile not found";
-}
-
-}catch(error){
-
-errorBox.innerText="Login failed";
-console.error(error);
+// Redirect dashboard
+window.location.replace("dashboard.html");
 
 }
 
-});
+catch(error){
+
+console.error("Login Error:", error.message);
+
+if(error.code === "auth/user-not-found"){
+alert("User not found");
+}
+else if(error.code === "auth/wrong-password"){
+alert("Wrong password");
+}
+else{
+alert("Login failed: " + error.message);
+}
+
+}
+
+};

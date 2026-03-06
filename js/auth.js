@@ -52,3 +52,4 @@ console.error(error);
 }
 
 });
+window.login = login;
